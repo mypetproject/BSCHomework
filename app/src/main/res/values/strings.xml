@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Заметка</string>
+    <string name="note">Заметка</string>
+    <string name="header">Заголовок</string>
+    <string name="save_button">Сохранить</string>
+    <string name="saved">Сохранено</string>
+    <string name="not_saved">Не сохранено</string>
+</resources>

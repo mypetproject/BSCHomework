@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="headerText"
+            type="String" />
+
+        <variable
+            name="notesText"
+            type="String" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/header_TIL"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="@string/header"
+            app:placeholderText="Введите текст">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/header_TIET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={headerText}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/notes_TIL"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/header_TIL"
+            android:layout_margin="10dp"
+            android:hint="@string/note"
+            app:placeholderText="Введите текст">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/notes_TIET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={notesText}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/notes_TIL"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:enabled="@{headerText.trim().length() > 0 &amp;&amp; notesText.trim().length() > 0}"
+            android:gravity="center"
+            android:text="@string/save_button" />
+
+    </RelativeLayout>
+</layout>
