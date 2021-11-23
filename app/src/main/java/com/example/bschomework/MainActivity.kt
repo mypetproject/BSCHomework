@@ -6,24 +6,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.bschomework.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), MainActivityPresenter.View {
+class MainActivity : AppCompatActivity(), MainActivityView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(
+        val binding : ActivityMainBinding = DataBindingUtil.setContentView(
             this, R.layout.activity_main
         )
 
-        val presenter = MainActivityPresenter(this)
-
-        binding.saveButton.setOnClickListener {
-
-            if (binding.headerText == null) binding.headerText = ""
-            if (binding.notesText == null) binding.notesText = ""
-
-            presenter.saveData(binding.headerText!!.trim(), binding.notesText!!.trim())
-        }
+        binding.presenter = MainActivityPresenter(this)
     }
 
     override fun savedToast() {

@@ -1,10 +1,28 @@
 package com.example.bschomework
 
-class MainActivityPresenter(private val view: View) {
+import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
+import kotlin.properties.Delegates
+
+class MainActivityPresenter(private val view: MainActivityView) : BaseObservable(){
+
+    @get:Bindable var header : String by Delegates.observable(""){ _, _, _ ->
+        notifyPropertyChanged(BR.header)
+        saveButtonEnabled = isSaveButtonEnabled()
+    }
+
+    @get:Bindable var note : String by Delegates.observable(""){ _, _, _ ->
+        notifyPropertyChanged(BR.note)
+        saveButtonEnabled = isSaveButtonEnabled()
+    }
+
+    @get:Bindable var saveButtonEnabled : Boolean by Delegates.observable(false){ _, _, _ ->
+        notifyPropertyChanged(BR.saveButtonEnabled)
+    }
 
     private var notesModel = NotesModel("", "")
 
-    fun saveData(header: String, note: String) {
+    fun saveData() {
 
         notesModel.header = header
         notesModel.note = note
@@ -20,8 +38,7 @@ class MainActivityPresenter(private val view: View) {
         return notesModel.header.isNotEmpty() && notesModel.note.isNotEmpty()
     }
 
-    interface View {
-        fun savedToast()
-        fun notSavedToast()
+    private fun isSaveButtonEnabled() : Boolean {
+        return header.isNotEmpty() && note.isNotEmpty()
     }
 }
