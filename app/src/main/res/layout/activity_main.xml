@@ -63,9 +63,28 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="@dimen/save_button_margin"
                 android:enabled="@{presenter.saveButtonEnabled}"
-                android:onClick="@{() -> presenter.saveData()}"
                 android:gravity="center"
+                android:onClick="@{() -> presenter.saveData()}"
                 android:text="@string/save_button" />
+
+            <ImageButton
+                android:id="@+id/photo_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/save_button"
+                android:layout_centerHorizontal="true"
+                android:onClick="@{() -> presenter.photoButtonClicked()}"
+                android:src="@drawable/ic_baseline_add_a_photo_48"
+                android:contentDescription="@string/do_photo" />
+
+            <ImageView
+                android:id="@+id/photo_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/photo_button"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/photo_image_margin"
+                android:contentDescription="@string/photo"/>
 
         </RelativeLayout>
     </ScrollView>

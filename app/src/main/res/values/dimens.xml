@@ -3,4 +3,6 @@
     <dimen name="header_margin">10dp</dimen>
     <dimen name="notes_margin">10dp</dimen>
     <dimen name="save_button_margin">10dp</dimen>
+    <dimen name="about_layout_margin">10dp</dimen>
+    <dimen name="photo_image_margin">10dp</dimen>
 </resources>
