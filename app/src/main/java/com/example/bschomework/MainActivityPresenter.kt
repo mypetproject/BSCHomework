@@ -26,14 +26,15 @@ class MainActivityPresenter(private val view: MainActivityView) : BaseObservable
     private var notesModel = NotesModel(header, note)
 
     fun setButtonsVisibility() {
-        val isButtonEnabled = isButtonsEnabled()
 
-        saveButtonEnabled = isButtonEnabled
+        isButtonsEnabled().let {
+            saveButtonEnabled = it
 
-        if (isButtonEnabled) {
-            view.showShareButton()
-        } else {
-            view.hideShareButton()
+            if (it) {
+                view.showShareButton()
+            } else {
+                view.hideShareButton()
+            }
         }
     }
 
