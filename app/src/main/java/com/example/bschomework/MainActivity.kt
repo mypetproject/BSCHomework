@@ -5,12 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import com.example.bschomework.databinding.ActivityMainBinding
+import com.example.bschomework.fragments.NotesListFragment
 import java.io.File
 
 class MainActivity : AppCompatActivity(), MainActivityView {
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     ) { result ->
 
         if (result) {
+            binding.photoIv.visibility = View.VISIBLE
             binding.photoIv.setImageURI(photoUri)
         }
     }
@@ -47,7 +50,9 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             this, R.layout.activity_main
         )
 
-        binding.presenter = MainActivityPresenter(this)
+        (supportFragmentManager.findFragmentById(R.id.fragment_notes_list) as NotesListFragment).let {
+            binding.presenter = MainActivityPresenter(this, it).apply { it.presenter = this }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -105,7 +110,17 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
     }
 
+    override fun setNoteDataFragmentVisibility() {
+        binding.fragmentNoteData.let {
+            if (it.visibility == View.GONE) it.visibility = View.VISIBLE
+        }
+    }
+
     private fun setPhotoUri() {
-        photoUri = FileProvider.getUriForFile(this, "com.example.bschomework.fileprovider", File(filesDir, "temp.jpg"))
+        photoUri = FileProvider.getUriForFile(
+            this,
+            "com.example.bschomework.fileprovider",
+            File(filesDir, "temp.jpg")
+        )
     }
 }

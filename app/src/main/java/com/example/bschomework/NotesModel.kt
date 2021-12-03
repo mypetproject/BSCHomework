@@ -1,3 +1,3 @@
 package com.example.bschomework
 
-data class NotesModel (var header: String, var note : String)
+data class NotesModel(var notes : MutableList<NoteData>)

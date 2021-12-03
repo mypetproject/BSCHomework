@@ -12,10 +12,12 @@
     </data>
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/scroll_view_margin"
+        android:scrollbars="none">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -26,6 +28,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/header_margin"
                 android:hint="@string/header"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:placeholderText="@string/input_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -42,9 +47,11 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/header_TIL"
                 android:layout_margin="@dimen/notes_margin"
                 android:hint="@string/note"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/header_TIL"
                 app:placeholderText="@string/input_text">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -59,35 +66,61 @@
                 android:id="@+id/save_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/notes_TIL"
-                android:layout_centerHorizontal="true"
                 android:layout_margin="@dimen/save_button_margin"
                 android:enabled="@{presenter.saveButtonEnabled}"
                 android:gravity="center"
                 android:onClick="@{() -> presenter.saveData()}"
-                android:text="@string/save_button" />
+                android:text="@string/save_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/notes_TIL" />
 
             <ImageButton
                 android:id="@+id/photo_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/save_button"
-                android:layout_centerHorizontal="true"
                 android:contentDescription="@string/do_photo"
                 android:onClick="@{() -> presenter.photoButtonClicked()}"
-                android:src="@drawable/ic_baseline_add_a_photo_48" />
+                android:src="@drawable/ic_baseline_add_a_photo_48"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/save_button" />
 
             <ImageView
                 android:id="@+id/photo_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/photo_button"
-                android:layout_centerHorizontal="true"
                 android:layout_margin="@dimen/photo_image_margin"
+                android:adjustViewBounds="true"
                 android:contentDescription="@string/photo"
                 android:scaleType="centerInside"
-                android:adjustViewBounds="true"/>
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/photo_button" />
 
-        </RelativeLayout>
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_note_data"
+                android:name="com.example.bschomework.fragments.NoteDataFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_note_data_margin"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/photo_iv" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_notes_list"
+                android:name="com.example.bschomework.fragments.NotesListFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_notes_list_margin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_note_data" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

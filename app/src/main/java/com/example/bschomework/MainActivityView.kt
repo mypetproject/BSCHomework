@@ -6,4 +6,5 @@ interface MainActivityView {
     fun showShareButton()
     fun hideShareButton()
     fun photoButtonClicked()
+    fun setNoteDataFragmentVisibility()
 }
