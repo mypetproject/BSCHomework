@@ -3,21 +3,20 @@ package com.example.bschomework
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bschomework.databinding.NotesListItemBinding
 
 class NotesListAdapter(
     private val notes: MutableList<NoteData>,
-    private val onItemClick: ((NoteData, Int) -> Unit)?
+    private val onItemClick: ((NoteData) -> Unit)?
 ) : RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>() {
 
-    var selectedPosition = RecyclerView.NO_POSITION
+    private var selectedPosition = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val itemView =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.notes_list_item, parent, false)
-        return NoteViewHolder(itemView)
+        NotesListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false).also {
+            return NoteViewHolder(it)
+        }
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
@@ -27,17 +26,21 @@ class NotesListAdapter(
 
     override fun getItemCount() = notes.size
 
-    inner class NoteViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val header: TextView = view.findViewById(R.id.header_rv)
-
-        init {
-            view.setOnClickListener {
-                onItemClick?.invoke(notes[absoluteAdapterPosition], absoluteAdapterPosition)
-            }
-        }
+    inner class NoteViewHolder(private val binding: NotesListItemBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
 
         fun bind(note: NoteData) {
-            header.text = note.header
+            binding.headerRv.text = note.header
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(p0: View?) {
+
+            notifyItemChanged(selectedPosition)
+            notifyItemChanged(absoluteAdapterPosition)
+
+            selectedPosition = absoluteAdapterPosition
+
+            onItemClick?.invoke(notes[absoluteAdapterPosition])
         }
     }
 }

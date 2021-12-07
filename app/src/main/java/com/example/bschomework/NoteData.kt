@@ -1,6 +1,8 @@
 package com.example.bschomework
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
-data class NoteData(var header: String, var note: String, var date: Date) : Serializable
+@Parcelize
+data class NoteData(var header: String, var note: String, var date: Date) : Parcelable

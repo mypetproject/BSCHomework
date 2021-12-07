@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.bschomework.MainActivityPresenter
 import com.example.bschomework.NoteData
 import com.example.bschomework.NotesListAdapter
@@ -25,19 +26,18 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list), NotesListFragm
         savedInstanceState: Bundle?
     ): View {
 
-        FragmentNotesListBinding.inflate(inflater, container, false).also {
+        FragmentNotesListBinding.inflate(inflater, container, false).run {
 
-            adapter = NotesListAdapter(presenter.notesModel.notes) { noteData: NoteData, position ->
+            adapter = NotesListAdapter(presenter.notesModel.notes) { noteData: NoteData ->
 
-                adapter.selectedPosition = position
-                adapter.notifyDataSetChanged()
-
-                setFragmentResult("dataForNoteDataFragment", bundleOf("noteData" to noteData))
+                setFragmentResult(NoteDataFragment.REQUEST_KEY, bundleOf(NoteDataFragment.KEY to noteData))
             }
 
-            it.notesRecyclerview.adapter = adapter
+            notesRecyclerview.adapter = adapter
 
-            return it.root
+            (notesRecyclerview.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
+            return root
         }
     }
 

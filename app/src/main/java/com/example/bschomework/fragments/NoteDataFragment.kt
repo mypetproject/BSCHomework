@@ -21,16 +21,24 @@ class NoteDataFragment : Fragment(R.layout.fragment_note_data) {
 
         val binding = FragmentNoteDataBinding.inflate(inflater, container, false)
 
-        setFragmentResultListener("dataForNoteDataFragment") { _, bundle ->
-            val result = bundle.getSerializable("noteData") as NoteData
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
 
-            binding.header.text = result.header
-            binding.note.text = result.note
-            binding.date.text = result.date.toString()
+            (bundle.getParcelable<NoteData>(KEY) as NoteData).let {
+                binding.run {
+                    header.text = it.header
+                    note.text = it.note
+                    date.text = it.date.toString()
+                }
+            }
 
             (activity as MainActivity).setNoteDataFragmentVisibility()
         }
 
         return binding.root
+    }
+
+    companion object {
+        const val REQUEST_KEY = "dataForNoteDataFragment"
+        const val KEY = "noteData"
     }
 }
