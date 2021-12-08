@@ -1,14 +1,13 @@
 package com.example.bschomework
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bschomework.databinding.NotesListItemBinding
 
 class NotesListAdapter(
     private val notes: MutableList<NoteData>,
-    private val onItemClick: ((NoteData) -> Unit)?
+    private val onItemClick: ((NoteData) -> Unit)
 ) : RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>() {
 
     private var selectedPosition = RecyclerView.NO_POSITION
@@ -26,21 +25,19 @@ class NotesListAdapter(
 
     override fun getItemCount() = notes.size
 
-    inner class NoteViewHolder(private val binding: NotesListItemBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class NoteViewHolder(private val binding: NotesListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(note: NoteData) {
             binding.headerRv.text = note.header
-            itemView.setOnClickListener(this)
-        }
 
-        override fun onClick(p0: View?) {
+            itemView.setOnClickListener {
+                notifyItemChanged(selectedPosition)
+                notifyItemChanged(absoluteAdapterPosition)
 
-            notifyItemChanged(selectedPosition)
-            notifyItemChanged(absoluteAdapterPosition)
+                selectedPosition = absoluteAdapterPosition
 
-            selectedPosition = absoluteAdapterPosition
-
-            onItemClick?.invoke(notes[absoluteAdapterPosition])
+                onItemClick.invoke(notes[absoluteAdapterPosition])
+            }
         }
     }
 }
