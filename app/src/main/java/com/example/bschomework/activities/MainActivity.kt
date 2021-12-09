@@ -1,4 +1,4 @@
-package com.example.bschomework
+package com.example.bschomework.activities
 
 import android.content.Intent
 import android.net.Uri
@@ -6,13 +6,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
+import com.example.bschomework.R
 import com.example.bschomework.databinding.ActivityMainBinding
-import com.example.bschomework.fragments.NotesListFragment
+import com.example.bschomework.presenters.MainActivityPresenter
 import java.io.File
 
 class MainActivity : AppCompatActivity(), MainActivityView {
@@ -46,20 +46,13 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(
-            this, R.layout.activity_main
-        )
-
-        (supportFragmentManager.findFragmentById(R.id.fragment_notes_list) as NotesListFragment).let {
-            binding.presenter = MainActivityPresenter(this, it).apply { it.presenter = this }
-        }
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.presenter = MainActivityPresenter(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_main_options_menu, menu)
         this.menu = menu
-
-        binding.presenter?.setButtonsVisibility()
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -67,10 +60,6 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         return when (item.itemId) {
-            R.id.share_menu_item -> {
-                shareMenuItemClicked()
-                true
-            }
             R.id.about_menu_item -> {
                 aboutMenuItemClicked()
                 true
@@ -83,44 +72,15 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         startActivity(Intent(this, AboutActivity::class.java))
     }
 
-    private fun shareMenuItemClicked() {
-        startActivity(Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, "${binding.presenter?.header}\n${binding.presenter?.note}")
-        })
-    }
-
-    override fun savedToast() {
-        Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show()
-    }
-
-    override fun notSavedToast() {
-        Toast.makeText(this, getString(R.string.not_saved), Toast.LENGTH_SHORT).show()
-    }
-
-    override fun showShareButton() {
-        menu?.findItem(R.id.share_menu_item)?.isVisible = true
-    }
-
-    override fun hideShareButton() {
-        menu?.findItem(R.id.share_menu_item)?.isVisible = false
-    }
-
-    override fun photoButtonClicked() {
-        requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
-    }
-
-    override fun setNoteDataFragmentVisibility() {
-        binding.fragmentNoteData.let {
-            if (it.visibility == View.GONE) it.visibility = View.VISIBLE
-        }
-    }
-
     private fun setPhotoUri() {
         photoUri = FileProvider.getUriForFile(
             this,
             "com.example.bschomework.fileprovider",
             File(filesDir, "temp.jpg")
         )
+    }
+
+    override fun photoButtonClicked() {
+        requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
     }
 }

@@ -1,7 +1,8 @@
-package com.example.bschomework
+package com.example.bschomework.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.bschomework.R
 
 class AboutActivity : AppCompatActivity() {
 
