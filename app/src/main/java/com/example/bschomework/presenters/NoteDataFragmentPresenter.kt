@@ -1,5 +1,6 @@
 package com.example.bschomework.presenters
 
+import android.os.Bundle
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.example.bschomework.BR
@@ -7,7 +8,7 @@ import com.example.bschomework.NoteData
 import com.example.bschomework.fragments.NoteDataFragmentView
 import kotlin.properties.Delegates
 
-class NoteDataFragmentPresenter(private val view: NoteDataFragmentView) : BaseObservable() {
+class NoteDataFragmentPresenter(private val view: NoteDataFragmentView, arguments: Bundle?) : BaseObservable() {
 
     @get:Bindable
     var header: String by Delegates.observable("") { _, _, _ ->
@@ -26,7 +27,11 @@ class NoteDataFragmentPresenter(private val view: NoteDataFragmentView) : BaseOb
         notifyPropertyChanged(BR.saveButtonEnabled)
     }
 
-    fun setData(noteData : NoteData) {
+    init {
+        setData(arguments?.getParcelable<NoteData>(REQUEST_KEY) as NoteData)
+    }
+
+    private fun setData(noteData : NoteData) {
         header = noteData.header
         note = noteData.note
     }
@@ -53,5 +58,9 @@ class NoteDataFragmentPresenter(private val view: NoteDataFragmentView) : BaseOb
 
     private fun checkData(): Boolean {
         return header.isNotEmpty() && note.isNotEmpty()
+    }
+
+    companion object {
+        const val REQUEST_KEY = "noteData"
     }
 }

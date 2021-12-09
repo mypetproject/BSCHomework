@@ -6,19 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.bschomework.R
-import com.example.bschomework.activities.EditNoteActivity
+import com.example.bschomework.activities.MainActivity
 import com.example.bschomework.databinding.FragmentNoteDataBinding
 import com.example.bschomework.presenters.NoteDataFragmentPresenter
 
 class NoteDataFragment : Fragment(R.layout.fragment_note_data), NoteDataFragmentView {
 
-    val presenter = NoteDataFragmentPresenter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val presenter = NoteDataFragmentPresenter(this, arguments)
 
         FragmentNoteDataBinding.inflate(inflater, container, false).also {
             it.presenter = presenter
@@ -27,18 +27,18 @@ class NoteDataFragment : Fragment(R.layout.fragment_note_data), NoteDataFragment
     }
 
     override fun showShareButton() {
-        (activity as EditNoteActivity).showShareButton()
+        //  (activity as EditNoteActivity).showShareButton()
     }
 
     override fun hideShareButton() {
-        (activity as EditNoteActivity).hideShareButton()
+        // (activity as EditNoteActivity).hideShareButton()
     }
 
     override fun savedToast() {
-        (activity as EditNoteActivity).savedToast()
+        (activity as MainActivity).savedToast()
     }
 
     override fun notSavedToast() {
-        (activity as EditNoteActivity).notSavedToast()
+        (activity as MainActivity).notSavedToast()
     }
 }

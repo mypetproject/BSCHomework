@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -78,6 +79,14 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             "com.example.bschomework.fileprovider",
             File(filesDir, "temp.jpg")
         )
+    }
+
+    override fun savedToast() {
+        Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun notSavedToast() {
+        Toast.makeText(this, getString(R.string.not_saved), Toast.LENGTH_SHORT).show()
     }
 
     override fun photoButtonClicked() {

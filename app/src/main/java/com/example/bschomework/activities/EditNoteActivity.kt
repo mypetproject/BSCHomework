@@ -6,9 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bschomework.NoteData
 import com.example.bschomework.R
-import com.example.bschomework.fragments.NoteDataFragment
 
 class EditNoteActivity : AppCompatActivity(), EditNoteActivityView {
 
@@ -19,9 +17,6 @@ class EditNoteActivity : AppCompatActivity(), EditNoteActivityView {
         setContentView(R.layout.activity_edit_note)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        (supportFragmentManager.findFragmentById(R.id.fragment_note_data) as NoteDataFragment).presenter.setData(
-            intent.let { it.getParcelableExtra<NoteData>(REQUEST_KEY) as NoteData })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -51,7 +46,7 @@ class EditNoteActivity : AppCompatActivity(), EditNoteActivityView {
     }
 
     private fun shareMenuItemClicked() {
-        startActivity(Intent(Intent.ACTION_SEND).apply {
+        /*startActivity(Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(
                 Intent.EXTRA_TEXT,
@@ -59,7 +54,7 @@ class EditNoteActivity : AppCompatActivity(), EditNoteActivityView {
                     "$header\n$note"
                 }
             )
-        })
+        })*/
     }
 
     override fun showShareButton() {
@@ -81,9 +76,5 @@ class EditNoteActivity : AppCompatActivity(), EditNoteActivityView {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return super.onSupportNavigateUp()
-    }
-
-    companion object {
-        const val REQUEST_KEY = "noteData"
     }
 }
