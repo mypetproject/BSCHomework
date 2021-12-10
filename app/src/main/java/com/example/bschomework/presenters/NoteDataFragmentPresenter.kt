@@ -1,10 +1,14 @@
-package com.example.bschomework
+package com.example.bschomework.presenters
 
+import android.os.Bundle
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
+import com.example.bschomework.BR
+import com.example.bschomework.NoteData
+import com.example.bschomework.fragments.NoteDataFragmentView
 import kotlin.properties.Delegates
 
-class MainActivityPresenter(private val view: MainActivityView) : BaseObservable() {
+class NoteDataFragmentPresenter(private val view: NoteDataFragmentView, arguments: Bundle?) : BaseObservable() {
 
     @get:Bindable
     var header: String by Delegates.observable("") { _, _, _ ->
@@ -23,14 +27,20 @@ class MainActivityPresenter(private val view: MainActivityView) : BaseObservable
         notifyPropertyChanged(BR.saveButtonEnabled)
     }
 
-    private var notesModel = NotesModel(header, note)
+    init {
+        setData(arguments?.getParcelable<NoteData>(REQUEST_KEY) as NoteData)
+    }
 
-    fun setButtonsVisibility() {
+    private fun setData(noteData : NoteData) {
+        header = noteData.header
+        note = noteData.note
+    }
 
-        isButtonsEnabled().let {
-            saveButtonEnabled = it
+    private fun setButtonsVisibility() {
 
-            if (it) {
+        saveButtonEnabled = checkData().apply {
+
+            if (this) {
                 view.showShareButton()
             } else {
                 view.hideShareButton()
@@ -39,10 +49,6 @@ class MainActivityPresenter(private val view: MainActivityView) : BaseObservable
     }
 
     fun saveData() {
-
-        notesModel.header = header
-        notesModel.note = note
-
         if (checkData()) {
             view.savedToast()
         } else {
@@ -51,14 +57,10 @@ class MainActivityPresenter(private val view: MainActivityView) : BaseObservable
     }
 
     private fun checkData(): Boolean {
-        return notesModel.header.isNotEmpty() && notesModel.note.isNotEmpty()
-    }
-
-    private fun isButtonsEnabled(): Boolean {
         return header.isNotEmpty() && note.isNotEmpty()
     }
 
-    fun photoButtonClicked() {
-        view.photoButtonClicked()
+    companion object {
+        const val REQUEST_KEY = "noteData"
     }
 }

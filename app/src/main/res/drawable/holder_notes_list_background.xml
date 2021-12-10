@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/holder_notes_list_background_radius" />
+            <solid android:color="?attr/colorNotesListHolderPressed" />
+        </shape>
+    </item>
+
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/holder_notes_list_background_radius" />
+            <solid android:color="?attr/colorNotesListHolderSelected" />
+        </shape>
+    </item>
+
+    <item android:state_selected="false">
+        <shape android:shape="rectangle">
+            <corners android:radius="@dimen/holder_notes_list_background_radius" />
+            <solid android:color="?attr/colorNotesListHolderUnselected" />
+        </shape>
+    </item>
+
+</selector>

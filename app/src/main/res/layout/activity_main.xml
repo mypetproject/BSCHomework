@@ -7,87 +7,53 @@
 
         <variable
             name="presenter"
-            type="com.example.bschomework.MainActivityPresenter" />
+            type="com.example.bschomework.presenters.MainActivityPresenter" />
 
     </data>
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/scroll_view_margin"
+        android:scrollbars="none">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/header_TIL"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_container"
+                android:name="com.example.bschomework.fragments.NotesListFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/header_margin"
-                android:hint="@string/header"
-                app:placeholderText="@string/input_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/header_TIET"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="flagNoExtractUi|actionNext"
-                    android:inputType="text"
-                    android:text="@={presenter.header}" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/notes_TIL"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/header_TIL"
-                android:layout_margin="@dimen/notes_margin"
-                android:hint="@string/note"
-                app:placeholderText="@string/input_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/notes_TIET"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="flagNoExtractUi"
-                    android:text="@={presenter.note}" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/save_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/notes_TIL"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="@dimen/save_button_margin"
-                android:enabled="@{presenter.saveButtonEnabled}"
-                android:gravity="center"
-                android:onClick="@{() -> presenter.saveData()}"
-                android:text="@string/save_button" />
+                android:layout_margin="@dimen/fragment_notes_list_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/photo_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/save_button"
-                android:layout_centerHorizontal="true"
                 android:contentDescription="@string/do_photo"
                 android:onClick="@{() -> presenter.photoButtonClicked()}"
-                android:src="@drawable/ic_baseline_add_a_photo_48" />
+                android:src="@drawable/ic_baseline_add_a_photo_48"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fragment_container" />
 
             <ImageView
                 android:id="@+id/photo_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/photo_button"
-                android:layout_centerHorizontal="true"
                 android:layout_margin="@dimen/photo_image_margin"
+                android:adjustViewBounds="true"
                 android:contentDescription="@string/photo"
                 android:scaleType="centerInside"
-                android:adjustViewBounds="true"/>
-
-        </RelativeLayout>
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/photo_button" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
