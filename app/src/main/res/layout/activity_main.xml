@@ -22,7 +22,7 @@
             android:layout_height="wrap_content">
 
             <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragment_notes_list"
+                android:id="@+id/fragment_container"
                 android:name="com.example.bschomework.fragments.NotesListFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
                 android:src="@drawable/ic_baseline_add_a_photo_48"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fragment_notes_list" />
+                app:layout_constraintTop_toBottomOf="@+id/fragment_container" />
 
             <ImageView
                 android:id="@+id/photo_iv"
