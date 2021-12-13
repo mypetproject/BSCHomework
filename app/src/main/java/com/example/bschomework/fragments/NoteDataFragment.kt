@@ -5,20 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.lifecycleScope
 import com.example.bschomework.R
-import com.example.bschomework.activities.MainActivity
+import com.example.bschomework.activities.EditNotesActivity
 import com.example.bschomework.databinding.FragmentNoteDataBinding
 import com.example.bschomework.presenters.NoteDataFragmentPresenter
 
+
 class NoteDataFragment : Fragment(R.layout.fragment_note_data), NoteDataFragmentView {
 
+    lateinit var presenter: NoteDataFragmentPresenter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val presenter = NoteDataFragmentPresenter(this, arguments)
+
+        presenter = NoteDataFragmentPresenter(this, arguments)
 
         FragmentNoteDataBinding.inflate(inflater, container, false).also {
             it.presenter = presenter
@@ -26,19 +31,29 @@ class NoteDataFragment : Fragment(R.layout.fragment_note_data), NoteDataFragment
         }
     }
 
-    override fun showShareButton() {
-        //  (activity as EditNoteActivity).showShareButton()
+    override fun showButtons() {
+        (activity as EditNotesActivity).showButtons()
     }
 
-    override fun hideShareButton() {
-        // (activity as EditNoteActivity).hideShareButton()
+    override fun hideButtons() {
+        (activity as EditNotesActivity).hideButtons()
     }
 
     override fun savedToast() {
-        (activity as MainActivity).savedToast()
+        (activity as EditNotesActivity).savedToast()
     }
 
     override fun notSavedToast() {
-        (activity as MainActivity).notSavedToast()
+        (activity as EditNotesActivity).notSavedToast()
+    }
+
+    override fun getLifecycleScope(): LifecycleCoroutineScope = lifecycleScope
+
+    companion object {
+        const val NOTE_ID = "note_id"
+
+        fun newInstance(id: Long) = NoteDataFragment().apply {
+            arguments = Bundle().apply { putLong(NOTE_ID, id) }
+        }
     }
 }

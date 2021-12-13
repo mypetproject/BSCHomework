@@ -13,10 +13,13 @@ import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import com.example.bschomework.R
 import com.example.bschomework.databinding.ActivityMainBinding
+import com.example.bschomework.fragments.CreateNoteFragment
 import com.example.bschomework.presenters.MainActivityPresenter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 
 class MainActivity : AppCompatActivity(), MainActivityView {
+
 
     private var menu: Menu? = null
     private lateinit var binding: ActivityMainBinding
@@ -39,16 +42,24 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     ) { result ->
 
         if (result) {
-            binding.photoIv.visibility = View.VISIBLE
-            binding.photoIv.setImageURI(photoUri)
+            binding.photoIv.run {
+                visibility = View.VISIBLE
+                setImageURI(photoUri)
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.presenter = MainActivityPresenter(this)
+
+        binding =
+            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main).also {
+
+                it.presenter = MainActivityPresenter(this)
+
+                setSupportActionBar(it.toolbar)
+            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -61,11 +72,38 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         return when (item.itemId) {
+            R.id.save_menu_item -> {
+                saveMenuButtonClicked()
+                true
+            }
+            R.id.add_menu_item -> {
+                addMenuItemClicked()
+                true
+            }
             R.id.about_menu_item -> {
                 aboutMenuItemClicked()
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun saveMenuButtonClicked() {
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.question_save_note))
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                (supportFragmentManager.findFragmentById(R.id.fragment_container) as CreateNoteFragment).presenter.saveData()
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+            .show()
+    }
+
+    private fun addMenuItemClicked() {
+        supportFragmentManager.beginTransaction().run {
+            replace(R.id.fragment_container, CreateNoteFragment())
+            addToBackStack(null)
+            commit()
         }
     }
 
@@ -87,6 +125,22 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     override fun notSavedToast() {
         Toast.makeText(this, getString(R.string.not_saved), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun hideAddMenuItem() {
+        menu?.findItem(R.id.add_menu_item)?.isVisible = false
+    }
+
+    override fun showAddMenuItem() {
+        menu?.findItem(R.id.add_menu_item)?.isVisible = true
+    }
+
+    override fun hideSaveMenuItem() {
+        menu?.findItem(R.id.save_menu_item)?.isVisible = false
+    }
+
+    override fun showSaveMenuItem() {
+        menu?.findItem(R.id.save_menu_item)?.isVisible = true
     }
 
     override fun photoButtonClicked() {

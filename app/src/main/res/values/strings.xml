@@ -2,7 +2,7 @@
     <string name="app_name">Заметка</string>
     <string name="note">Заметка</string>
     <string name="header">Заголовок</string>
-    <string name="save_button">Сохранить</string>
+    <string name="save">Сохранить</string>
     <string name="saved">Сохранено</string>
     <string name="not_saved">Не сохранено</string>
     <string name="input_text">Введите текст</string>
@@ -12,4 +12,9 @@
     <string name="about_activity_label">О приложении</string>
     <string name="do_photo">Сделать фото</string>
     <string name="photo">Фото</string>
+    <string name="add">Добавить</string>
+    <string name="edit_note">Изменить запись</string>
+    <string name="question_save_note">Действительно сохранить заметку?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Отмена</string>
 </resources>

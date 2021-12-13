@@ -2,11 +2,9 @@
 <resources>
     <dimen name="header_margin">10dp</dimen>
     <dimen name="notes_margin">10dp</dimen>
-    <dimen name="save_button_margin">10dp</dimen>
     <dimen name="about_layout_margin">10dp</dimen>
     <dimen name="photo_image_margin">10dp</dimen>
     <dimen name="scroll_view_margin">5dp</dimen>
-    <dimen name="fragment_note_data_margin">10dp</dimen>
     <dimen name="fragment_notes_list_margin">10dp</dimen>
     <dimen name="holder_notes_list_background_radius">24dp</dimen>
     <dimen name="notes_list_holder_height">40dp</dimen>
