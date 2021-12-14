@@ -5,26 +5,29 @@ import com.example.bschomework.App
 import com.example.bschomework.activities.EditNotesActivity
 import com.example.bschomework.activities.EditNotesActivityView
 import com.example.bschomework.room.NoteData
-import kotlinx.coroutines.launch
 
-class EditNotesActivityPresenter(private val view: EditNotesActivityView, intent: Intent) {
+class EditNotesActivityPresenter(val view: EditNotesActivityView) {
     private val db = App.instance.database
-    var notes = mutableListOf<NoteData>()
 
-    init {
-        updateNotesList(intent)
+
+    suspend fun getNotes(): List<NoteData> {
+        return db.noteDao().getAllNotes()
     }
 
-    private fun updateNotesList(intent: Intent) {
-        view.getLifecycleScope().launch {
-            notes.clear()
-            notes.addAll(db.noteDao().getAllNotes())
+    private suspend fun getNoteById(id: Long): NoteData {
+        return db.noteDao().getNoteById(id)
+    }
 
-            view.setPagerCurrentItem(
-                notes.indexOf(
-                    db.noteDao().getNoteById(intent.getLongExtra(EditNotesActivity.EXTRA_LONG, 0L))
+    suspend fun setPagerCurrentItem(intent: Intent) {
+        view.setPagerCurrentItem(
+            getNotes().indexOf(
+                getNoteById(
+                    intent.getLongExtra(
+                        EditNotesActivity.EXTRA_LONG,
+                        0L
+                    )
                 )
             )
-        }
+        )
     }
 }

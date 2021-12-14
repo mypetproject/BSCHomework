@@ -1,65 +1,27 @@
 package com.example.bschomework.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import com.example.bschomework.R
 import com.example.bschomework.databinding.ActivityMainBinding
 import com.example.bschomework.fragments.CreateNoteFragment
-import com.example.bschomework.presenters.MainActivityPresenter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.io.File
 
 class MainActivity : AppCompatActivity(), MainActivityView {
 
-
     private var menu: Menu? = null
-    private lateinit var binding: ActivityMainBinding
-
-    private lateinit var photoUri: Uri
-
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-
-            setPhotoUri()
-
-            getCameraContent.launch(photoUri)
-        }
-    }
-
-    private val getCameraContent = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { result ->
-
-        if (result) {
-            binding.photoIv.run {
-                visibility = View.VISIBLE
-                setImageURI(photoUri)
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        binding =
-            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main).also {
-
-                it.presenter = MainActivityPresenter(this)
-
-                setSupportActionBar(it.toolbar)
-            }
+        DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main).run {
+            setSupportActionBar(toolbar)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -111,14 +73,6 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         startActivity(Intent(this, AboutActivity::class.java))
     }
 
-    private fun setPhotoUri() {
-        photoUri = FileProvider.getUriForFile(
-            this,
-            "com.example.bschomework.fileprovider",
-            File(filesDir, "temp.jpg")
-        )
-    }
-
     override fun savedToast() {
         Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show()
     }
@@ -141,9 +95,5 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     override fun showSaveMenuItem() {
         menu?.findItem(R.id.save_menu_item)?.isVisible = true
-    }
-
-    override fun photoButtonClicked() {
-        requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
     }
 }

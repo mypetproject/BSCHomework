@@ -14,13 +14,11 @@ import com.example.bschomework.databinding.ActivityEditNotesBinding
 import com.example.bschomework.fragments.NoteDataFragment
 import com.example.bschomework.presenters.EditNotesActivityPresenter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 
 class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private var menu: Menu? = null
-
-    private var adapter = NotesListViewPagerAdapter(this)
-    lateinit var presenter: EditNotesActivityPresenter
 
     private lateinit var binding: ActivityEditNotesBinding
 
@@ -30,7 +28,7 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        presenter = EditNotesActivityPresenter(this, intent)
+        val presenter = EditNotesActivityPresenter(this)
 
         binding = DataBindingUtil.setContentView<ActivityEditNotesBinding>(
             this,
@@ -42,10 +40,21 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
             setSupportActionBar(toolbar)
 
-            pager.adapter = adapter.apply {
-                items = presenter.notes
+            pager.adapter = NotesListViewPagerAdapter(this@EditNotesActivity).apply {
+                lifecycleScope.launch {
+                    items.let {
+
+                        it.addAll(presenter.getNotes())
+
+                        presenter.setPagerCurrentItem(intent)
+                    }
+                }
             }
         }
+    }
+
+    override fun setPagerCurrentItem(position: Int) {
+        binding.pager.setCurrentItem(position, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -80,7 +89,7 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
             .setTitle(getString(R.string.question_save_note))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
 
-                (supportFragmentManager.findFragmentByTag("f" + binding.pager.currentItem) as NoteDataFragment).run {
+                (supportFragmentManager.findFragmentByTag(VIEW_PAGER_DEFAULT_FRAGMENT_NAME + binding.pager.currentItem) as NoteDataFragment).run {
                     presenter.saveData()
                 }
             }
@@ -97,7 +106,7 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
             type = "text/plain"
             putExtra(
                 Intent.EXTRA_TEXT,
-                (supportFragmentManager.findFragmentByTag("f" + binding.pager.currentItem) as NoteDataFragment).presenter.run {
+                (supportFragmentManager.findFragmentByTag(VIEW_PAGER_DEFAULT_FRAGMENT_NAME + binding.pager.currentItem) as NoteDataFragment).presenter.run {
                     "$header\n$note"
                 }
             )
@@ -105,13 +114,17 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
     }
 
     override fun showButtons() {
-        menu?.findItem(R.id.share_menu_item)?.isVisible = true
-        menu?.findItem(R.id.save_menu_item)?.isVisible = true
+        menu?.run {
+            findItem(R.id.share_menu_item)?.isVisible = true
+            findItem(R.id.save_menu_item)?.isVisible = true
+        }
     }
 
     override fun hideButtons() {
-        menu?.findItem(R.id.share_menu_item)?.isVisible = false
-        menu?.findItem(R.id.save_menu_item)?.isVisible = false
+        menu?.run {
+            findItem(R.id.share_menu_item)?.isVisible = false
+            findItem(R.id.save_menu_item)?.isVisible = false
+        }
     }
 
     override fun savedToast() {
@@ -127,13 +140,8 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         return super.onSupportNavigateUp()
     }
 
-    override fun getLifecycleScope() = lifecycleScope
-
-    override fun setPagerCurrentItem(position: Int) {
-        binding.pager.setCurrentItem(position, false)
-    }
-
     companion object {
         const val EXTRA_LONG = "extra_long"
+        const val VIEW_PAGER_DEFAULT_FRAGMENT_NAME = "f"
     }
 }

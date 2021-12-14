@@ -10,17 +10,6 @@ class NotesListFragmentPresenter(private val view: NotesListFragmentView) {
     private val db = App.instance.database
     var notes = mutableListOf<NoteData>()
 
-    init {
-
-        view.getLifecycleScope().launch {
-            db.noteDao().getAllNotes().size.let {
-                if (it < 30) for (i in it..30) db.noteDao()
-                    .insert(NoteData(0, "Note $i", "Text $i"))
-            }
-            updateNotesList()
-        }
-    }
-
     fun updateNotesList() {
         view.getLifecycleScope().launch {
             notes.clear()
@@ -32,5 +21,4 @@ class NotesListFragmentPresenter(private val view: NotesListFragmentView) {
     fun onNotesListItemClick(noteData: NoteData) {
         view.notesListItemClicked(noteData)
     }
-
 }
