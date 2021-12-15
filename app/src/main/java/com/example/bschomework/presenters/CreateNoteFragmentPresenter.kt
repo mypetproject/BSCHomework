@@ -37,7 +37,7 @@ class CreateNoteFragmentPresenter(private val view: CreateNoteFragmentView) : Ba
         if (checkData()) {
 
             view.getLifecycleScope().launch {
-                db.noteDao().insert(NoteData(0, header, note))
+                db.noteDao().insert(NoteData(header, note))
             }
 
             view.savedToast()

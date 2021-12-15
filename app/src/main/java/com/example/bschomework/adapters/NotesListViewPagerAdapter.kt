@@ -9,7 +9,7 @@ import com.example.bschomework.room.NoteData
 class NotesListViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
 
-    var items: MutableList<NoteData> = mutableListOf()
+    var items: List<NoteData> = emptyList()
 
     override fun getItemCount(): Int = items.size
 

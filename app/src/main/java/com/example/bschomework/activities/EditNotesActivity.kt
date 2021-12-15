@@ -40,15 +40,13 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
             setSupportActionBar(toolbar)
 
-            pager.adapter = NotesListViewPagerAdapter(this@EditNotesActivity).apply {
-                lifecycleScope.launch {
-                    items.let {
-
-                        it.addAll(presenter.getNotes())
-
-                        presenter.setPagerCurrentItem(intent)
+            lifecycleScope.launch {
+                pager.adapter =
+                    NotesListViewPagerAdapter(this@EditNotesActivity).also {
+                        it.items = presenter.getNotes()
                     }
-                }
+
+                presenter.setPagerCurrentItem(intent)
             }
         }
     }
