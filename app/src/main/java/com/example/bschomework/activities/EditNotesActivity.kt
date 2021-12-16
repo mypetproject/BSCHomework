@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
@@ -12,7 +13,8 @@ import com.example.bschomework.R
 import com.example.bschomework.adapters.NotesListViewPagerAdapter
 import com.example.bschomework.databinding.ActivityEditNotesBinding
 import com.example.bschomework.fragments.NoteDataFragment
-import com.example.bschomework.presenters.EditNotesActivityPresenter
+import com.example.bschomework.room.NoteData
+import com.example.bschomework.viewModels.EditNotesActivityViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
@@ -22,13 +24,13 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private lateinit var binding: ActivityEditNotesBinding
 
+    private val model: EditNotesActivityViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_notes)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val presenter = EditNotesActivityPresenter(this)
 
         binding = DataBindingUtil.setContentView<ActivityEditNotesBinding>(
             this,
@@ -40,19 +42,32 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
             setSupportActionBar(toolbar)
 
-            lifecycleScope.launch {
-                pager.adapter =
-                    NotesListViewPagerAdapter(this@EditNotesActivity).also {
-                        it.items = presenter.getNotes()
-                    }
 
-                presenter.setPagerCurrentItem(intent)
-            }
+            pager.adapter =
+                NotesListViewPagerAdapter(this@EditNotesActivity).also {
+
+                    model.notes.observe(this@EditNotesActivity, { notes ->
+                        it.items = notes
+                        currentItem(notes)
+                    })
+                }
+        }
+    }
+
+    private fun currentItem(notes: List<NoteData>) {
+        lifecycleScope.launch {
+            binding.pager.setCurrentItem(
+                notes.indexOf(
+                    model.getNoteById(
+                        intent.getLongExtra(EXTRA_LONG, 0L)
+                    )
+                ), false
+            )
         }
     }
 
     override fun setPagerCurrentItem(position: Int) {
-        binding.pager.setCurrentItem(position, false)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
