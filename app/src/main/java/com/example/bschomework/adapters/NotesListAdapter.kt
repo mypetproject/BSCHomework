@@ -7,7 +7,7 @@ import com.example.bschomework.databinding.NotesListItemBinding
 import com.example.bschomework.room.NoteData
 
 class NotesListAdapter(
-    private val notes: MutableList<NoteData>,
+    private val notes: List<NoteData>,
     private val onItemClick: ((NoteData) -> Unit)
 ) : RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>() {
 

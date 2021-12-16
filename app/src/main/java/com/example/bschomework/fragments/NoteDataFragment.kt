@@ -5,17 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import com.example.bschomework.R
 import com.example.bschomework.activities.EditNotesActivity
 import com.example.bschomework.databinding.FragmentNoteDataBinding
-import com.example.bschomework.presenters.NoteDataFragmentPresenter
+import com.example.bschomework.viewModels.NoteDataFragmentViewModel
+import com.example.bschomework.viewModels.NoteDataFragmentViewModelFactory
 
 
 class NoteDataFragment : Fragment(R.layout.fragment_note_data), NoteDataFragmentView {
 
-    lateinit var presenter: NoteDataFragmentPresenter
+    val model: NoteDataFragmentViewModel by viewModels { NoteDataFragmentViewModelFactory(arguments?.getLong(NOTE_ID) as Long) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,10 +25,9 @@ class NoteDataFragment : Fragment(R.layout.fragment_note_data), NoteDataFragment
         savedInstanceState: Bundle?
     ): View {
 
-        presenter = NoteDataFragmentPresenter(this, arguments)
-
         FragmentNoteDataBinding.inflate(inflater, container, false).also {
-            it.presenter = presenter
+            it.model = model
+            it.lifecycleOwner = this
             return it.root
         }
     }

@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.question_save_note))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                (supportFragmentManager.findFragmentById(R.id.fragment_container) as CreateNoteFragment).presenter.saveData()
+                (supportFragmentManager.findFragmentById(R.id.fragment_container) as CreateNoteFragment).model.saveData()
             }
             .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
             .show()
