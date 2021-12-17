@@ -22,6 +22,8 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private lateinit var binding: ActivityEditNotesBinding
 
+    private val adapter by lazy { NotesListViewPagerAdapter(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_notes)
@@ -41,11 +43,9 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
             setSupportActionBar(toolbar)
 
             lifecycleScope.launch {
-                pager.adapter =
-                    NotesListViewPagerAdapter(this@EditNotesActivity).also {
-                        it.items = presenter.getNotes()
-                    }
-
+                pager.adapter = adapter.also {
+                    it.items = presenter.getNotes()
+                }
                 presenter.setPagerCurrentItem(intent)
             }
         }
@@ -86,11 +86,8 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.question_save_note))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-
-                (supportFragmentManager.findFragmentByTag(VIEW_PAGER_DEFAULT_FRAGMENT_NAME + binding.pager.currentItem) as NoteDataFragment).run {
-                    presenter.saveData()
+                (adapter.fragments[binding.pager.currentItem] as NoteDataFragment).save()
                 }
-            }
             .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
             .show()
     }
@@ -104,9 +101,7 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
             type = "text/plain"
             putExtra(
                 Intent.EXTRA_TEXT,
-                (supportFragmentManager.findFragmentByTag(VIEW_PAGER_DEFAULT_FRAGMENT_NAME + binding.pager.currentItem) as NoteDataFragment).presenter.run {
-                    "$header\n$note"
-                }
+                (adapter.fragments[binding.pager.currentItem] as NoteDataFragment).getTextForShare()
             )
         })
     }
@@ -140,6 +135,5 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     companion object {
         const val EXTRA_LONG = "extra_long"
-        const val VIEW_PAGER_DEFAULT_FRAGMENT_NAME = "f"
     }
 }

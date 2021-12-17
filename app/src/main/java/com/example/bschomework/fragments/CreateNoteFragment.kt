@@ -49,4 +49,8 @@ class CreateNoteFragment : Fragment(R.layout.fragment_create_note), CreateNoteFr
     override fun hideSaveMenuItem() {
         (activity as MainActivity).hideSaveMenuItem()
     }
+
+    override fun save() {
+        presenter.saveData()
+    }
 }

@@ -49,6 +49,14 @@ class NoteDataFragment : Fragment(R.layout.fragment_note_data), NoteDataFragment
 
     override fun getLifecycleScope(): LifecycleCoroutineScope = lifecycleScope
 
+    override fun save() {
+        presenter.saveData()
+    }
+
+    override fun getTextForShare(): String = presenter.run {
+        "$header\n$note"
+    }
+
     companion object {
         const val NOTE_ID = "note_id"
 

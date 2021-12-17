@@ -8,4 +8,6 @@ interface NoteDataFragmentView {
     fun savedToast()
     fun notSavedToast()
     fun getLifecycleScope(): LifecycleCoroutineScope
+    fun save()
+    fun getTextForShare() : String
 }

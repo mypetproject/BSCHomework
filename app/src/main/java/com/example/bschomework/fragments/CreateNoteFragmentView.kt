@@ -8,4 +8,5 @@ interface CreateNoteFragmentView {
     fun getLifecycleScope(): LifecycleCoroutineScope
     fun showSaveMenuItem()
     fun hideSaveMenuItem()
+    fun save()
 }
