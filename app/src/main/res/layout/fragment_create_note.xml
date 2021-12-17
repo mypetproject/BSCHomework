@@ -5,10 +5,6 @@
     <data>
 
         <variable
-            name="presenter"
-            type="com.example.bschomework.presenters.CreateNoteFragmentPresenter" />
-        
-        <variable
             name="model"
             type="com.example.bschomework.viewModels.CreateNoteFragmentViewModel" />
 

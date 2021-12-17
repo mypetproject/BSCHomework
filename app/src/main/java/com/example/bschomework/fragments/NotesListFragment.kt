@@ -13,11 +13,11 @@ import com.example.bschomework.activities.MainActivity
 import com.example.bschomework.adapters.NotesListAdapter
 import com.example.bschomework.databinding.FragmentNotesListBinding
 import com.example.bschomework.room.NoteData
-import com.example.bschomework.viewModels.NotesListFragmentViewModel
+import com.example.bschomework.viewModels.NotesListViewModel
 
-class NotesListFragment : Fragment(R.layout.fragment_notes_list), NotesListFragmentView {
+class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
-    private val model: NotesListFragmentViewModel by viewModels()
+    private val model: NotesListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,7 +25,6 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list), NotesListFragm
         savedInstanceState: Bundle?
     ): View =
         FragmentNotesListBinding.inflate(inflater, container, false).apply {
-
             model.notes.observe(this@NotesListFragment, { notes ->
                 notesRecyclerview.adapter =
                     NotesListAdapter(notes) { noteData: NoteData ->
@@ -43,8 +42,7 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list), NotesListFragm
         }
     }
 
-    override fun notesListItemClicked(noteData: NoteData) {
-
+    private fun notesListItemClicked(noteData: NoteData) {
         startActivity(
             Intent(this.context, EditNotesActivity::class.java)
                 .putExtra(EditNotesActivity.EXTRA_LONG, noteData.id)

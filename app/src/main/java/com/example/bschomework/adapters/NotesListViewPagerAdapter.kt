@@ -11,10 +11,16 @@ class NotesListViewPagerAdapter(fragmentActivity: FragmentActivity) :
 
     var items: List<NoteData> = emptyList()
 
+    var fragments : MutableMap<Int,Fragment> = mutableMapOf()
+
     override fun getItemCount(): Int = items.size
 
     override fun createFragment(position: Int): Fragment {
 
-        return NoteDataFragment.newInstance(items[position].id)
+        return NoteDataFragment.newInstance(items[position].id).also {
+            fragments[position] = it
+        }
     }
+
+
 }

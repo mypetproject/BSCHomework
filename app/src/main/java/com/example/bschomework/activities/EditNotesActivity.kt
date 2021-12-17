@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -14,7 +13,7 @@ import com.example.bschomework.adapters.NotesListViewPagerAdapter
 import com.example.bschomework.databinding.ActivityEditNotesBinding
 import com.example.bschomework.fragments.NoteDataFragment
 import com.example.bschomework.room.NoteData
-import com.example.bschomework.viewModels.EditNotesActivityViewModel
+import com.example.bschomework.viewModels.NotesListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
@@ -24,7 +23,9 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private lateinit var binding: ActivityEditNotesBinding
 
-    private val model: EditNotesActivityViewModel by viewModels()
+    private val adapter by lazy { NotesListViewPagerAdapter(this) }
+
+    private val model : NotesListViewModel by viewModels()
 
     private var setCurrentPagerPosition = true
 
@@ -45,16 +46,16 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
             setSupportActionBar(toolbar)
 
             pager.adapter =
-                NotesListViewPagerAdapter(this@EditNotesActivity).also {
+                adapter.also {
                     model.notes.observe(this@EditNotesActivity, { notes ->
                         it.items = notes
-                        if (setCurrentPagerPosition) currentItem(it.items)
+                        if (setCurrentPagerPosition) setPagerCurrentItem(notes)
                     })
                 }
         }
     }
 
-    private fun currentItem(notes: List<NoteData>) = lifecycleScope.launch {
+    private fun setPagerCurrentItem(notes: List<NoteData>) = lifecycleScope.launch {
         binding.pager.setCurrentItem(
             notes.indexOf(
                 model.getNoteById(
@@ -65,9 +66,6 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         setCurrentPagerPosition = false
     }
 
-    override fun setPagerCurrentItem(position: Int) {
-
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_edit_note_menu, menu)
@@ -100,11 +98,8 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.question_save_note))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-
-                (supportFragmentManager.findFragmentByTag(VIEW_PAGER_DEFAULT_FRAGMENT_NAME + binding.pager.currentItem) as NoteDataFragment).run {
-                    model.saveData()
+                (adapter.fragments[binding.pager.currentItem] as NoteDataFragment).save()
                 }
-            }
             .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
             .show()
     }
@@ -118,9 +113,7 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
             type = "text/plain"
             putExtra(
                 Intent.EXTRA_TEXT,
-                (supportFragmentManager.findFragmentByTag(VIEW_PAGER_DEFAULT_FRAGMENT_NAME + binding.pager.currentItem) as NoteDataFragment).model.run {
-                    "${header.value.toString()}\n${note.value.toString()}"
-                }
+                (adapter.fragments[binding.pager.currentItem] as NoteDataFragment).getTextForShare()
             )
         })
     }
@@ -139,14 +132,6 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         }
     }
 
-    override fun savedToast() {
-        Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show()
-    }
-
-    override fun notSavedToast() {
-        Toast.makeText(this, getString(R.string.not_saved), Toast.LENGTH_SHORT).show()
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return super.onSupportNavigateUp()
@@ -154,6 +139,5 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     companion object {
         const val EXTRA_LONG = "extra_long"
-        const val VIEW_PAGER_DEFAULT_FRAGMENT_NAME = "f"
     }
 }
