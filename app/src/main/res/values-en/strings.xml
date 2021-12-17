@@ -14,4 +14,12 @@
     <string name="edit_note">Edit note</string>
     <string name="question_save_note">Do you really want to save the note?</string>
     <string name="cancel">Cancel</string>
+
+    <!--Content descriptions-->
+    <string name="note_titled">Note titled</string>
+    <string name="untitled_note">Untitled note</string>
+    <string name="save_button">Save button</string>
+    <string name="add_button">Add button</string>
+    <string name="about_the_app_button">About the app button</string>
+    <string name="share_note_button">Share note button</string>
 </resources>

@@ -15,4 +15,12 @@
     <string name="question_save_note">Действительно сохранить заметку?</string>
     <string name="ok" translatable="false">OK</string>
     <string name="cancel">Отмена</string>
+
+    <!--Content descriptions-->
+    <string name="note_titled">Заметка под названием</string>
+    <string name="untitled_note">Заметка без названия</string>
+    <string name="save_button">Кнопка сохранить</string>
+    <string name="add_button">Кнопка добавить</string>
+    <string name="about_the_app_button">Кнопка о приложении</string>
+    <string name="share_note_button">Кнопка поделиться заметкой</string>
 </resources>

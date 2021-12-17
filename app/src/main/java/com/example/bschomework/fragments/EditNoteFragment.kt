@@ -9,17 +9,18 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.bschomework.R
-import com.example.bschomework.activities.MainActivity
-import com.example.bschomework.databinding.FragmentCreateNoteBinding
+import com.example.bschomework.activities.EditNotesActivity
+import com.example.bschomework.databinding.FragmentEditNoteBinding
 import com.example.bschomework.room.NotesDatabase
 import com.example.bschomework.viewModels.NoteViewModel
 import com.example.bschomework.viewModels.NoteViewModelFactory
 
-class CreateNoteFragment : Fragment(R.layout.fragment_create_note), CreateNoteFragmentView {
+
+class EditNoteFragment : Fragment(R.layout.fragment_edit_note), EditNoteFragmentView {
 
     val model: NoteViewModel by viewModels {
         NoteViewModelFactory(
-            NotesDatabase.getDatabase(context as Context)
+            NotesDatabase.getDatabase(context as Context), arguments?.getLong(NOTE_ID) as Long
         )
     }
 
@@ -27,12 +28,11 @@ class CreateNoteFragment : Fragment(R.layout.fragment_create_note), CreateNoteFr
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentCreateNoteBinding.inflate(inflater, container, false).apply {
-        (activity as MainActivity).hideAddMenuItem()
-        model = this@CreateNoteFragment.model
+    ): View = FragmentEditNoteBinding.inflate(inflater, container, false).also {
+        it.model = model
+        it.lifecycleOwner = this
         subscribeToViewModel()
     }.root
-
 
     private fun subscribeToViewModel() {
 
@@ -53,11 +53,11 @@ class CreateNoteFragment : Fragment(R.layout.fragment_create_note), CreateNoteFr
         }
 
         model.onShowMenuItemsEvent.observe(this) {
-            (activity as MainActivity).showSaveMenuItem()
+            (activity as EditNotesActivity).showButtons()
         }
 
         model.onHideMenuItemsEvent.observe(this) {
-            (activity as MainActivity).hideSaveMenuItem()
+            (activity as EditNotesActivity).hideButtons()
         }
     }
 
@@ -67,5 +67,17 @@ class CreateNoteFragment : Fragment(R.layout.fragment_create_note), CreateNoteFr
 
     override fun save() {
         model.saveData()
+    }
+
+    override fun getTextForShare(): String = model.run {
+        "${header.value.toString()}\n${note.value.toString()}"
+    }
+
+    companion object {
+        const val NOTE_ID = "note_id"
+
+        fun newInstance(id: Long) = EditNoteFragment().apply {
+            arguments = Bundle().apply { putLong(NOTE_ID, id) }
+        }
     }
 }

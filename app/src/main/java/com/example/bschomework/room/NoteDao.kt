@@ -13,7 +13,7 @@ interface NoteDao {
     suspend fun update(noteData: NoteData)
 
     @Query("SELECT * FROM notes WHERE id = :id")
-    suspend fun getNoteById(id: Long): NoteData
+    suspend fun getNoteById(id: Long): NoteData?
 
     @Query("SELECT * FROM notes")
     fun getAllNotes(): LiveData<List<NoteData>>

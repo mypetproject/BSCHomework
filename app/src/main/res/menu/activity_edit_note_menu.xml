@@ -6,17 +6,20 @@
         android:id="@+id/save_menu_item"
         android:icon="@drawable/ic_baseline_save_24"
         android:title="@string/save"
+        android:contentDescription="@string/save_button"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/share_menu_item"
         android:icon="@drawable/ic_baseline_share_24"
         android:title="@string/share"
+        android:contentDescription="@string/share_note_button"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/about_menu_item"
         android:icon="@drawable/ic_baseline_info_24"
         android:title="@string/about"
+        android:contentDescription="@string/about_the_app_button"
         app:showAsAction="never" />
 </menu>

@@ -4,13 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.bschomework.R
 import com.example.bschomework.databinding.ActivityMainBinding
 import com.example.bschomework.fragments.CreateNoteFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.example.bschomework.fragments.SaveAlertDialogFragment
 
 class MainActivity : AppCompatActivity(), MainActivityView {
 
@@ -51,14 +50,11 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     private fun saveMenuButtonClicked() {
+        SaveAlertDialogFragment().show(supportFragmentManager, SaveAlertDialogFragment.TAG)
+    }
 
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.question_save_note))
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                (supportFragmentManager.findFragmentById(R.id.fragment_container) as CreateNoteFragment).presenter.saveData()
-            }
-            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
-            .show()
+    override fun saveAlertDialogOKButtonClicked() {
+        (supportFragmentManager.findFragmentById(R.id.fragment_container) as CreateNoteFragment).save()
     }
 
     private fun addMenuItemClicked() {
@@ -71,14 +67,6 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     private fun aboutMenuItemClicked() {
         startActivity(Intent(this, AboutActivity::class.java))
-    }
-
-    override fun savedToast() {
-        Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show()
-    }
-
-    override fun notSavedToast() {
-        Toast.makeText(this, getString(R.string.not_saved), Toast.LENGTH_SHORT).show()
     }
 
     override fun hideAddMenuItem() {

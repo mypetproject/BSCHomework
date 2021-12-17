@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/notes_list_holder_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/notes_list_holder_height"
         android:layout_margin="@dimen/notes_list_holder_margin"

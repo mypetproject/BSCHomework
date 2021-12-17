@@ -1,8 +1,10 @@
 package com.example.bschomework.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bschomework.R
 import com.example.bschomework.databinding.NotesListItemBinding
 import com.example.bschomework.room.NoteData
 
@@ -29,6 +31,14 @@ class NotesListAdapter(
         fun bind(note: NoteData, onItemClick: (NoteData) -> Unit) {
             binding.headerRv.text = note.header
             itemView.setOnClickListener { onItemClick.invoke(note) }
+            itemView.contentDescription = prepareContentDescription(note)
+        }
+
+        private fun prepareContentDescription(note: NoteData): String {
+            val context: Context = binding.root.context
+
+            return if (note.header.isNotEmpty()) "${context.getString(R.string.note_titled)} ${note.header}"
+            else context.getString(R.string.untitled_note)
         }
     }
 }

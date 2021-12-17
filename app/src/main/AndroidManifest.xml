@@ -3,7 +3,6 @@
     package="com.example.bschomework">
 
     <application
-        android:name=".App"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
