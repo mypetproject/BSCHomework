@@ -2,11 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.bschomework">
 
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-feature android:name="android.hardware.camera" />
-
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
@@ -29,8 +26,7 @@
             android:name=".activities.AboutActivity"
             android:label="@string/about_activity_label" />
 
-        <activity
-            android:name=".activities.EditNoteActivity" />
+        <activity android:name=".activities.EditNotesActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -39,7 +35,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepath"/>
+                android:resource="@xml/filepath" />
         </provider>
     </application>
 

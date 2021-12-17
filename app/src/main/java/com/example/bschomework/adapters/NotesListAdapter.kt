@@ -1,9 +1,10 @@
-package com.example.bschomework
+package com.example.bschomework.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bschomework.databinding.NotesListItemBinding
+import com.example.bschomework.room.NoteData
 
 class NotesListAdapter(
     private val notes: MutableList<NoteData>,
@@ -27,7 +28,7 @@ class NotesListAdapter(
 
         fun bind(note: NoteData, onItemClick: (NoteData) -> Unit) {
             binding.headerRv.text = note.header
-            itemView.setOnClickListener {onItemClick.invoke(note)}
+            itemView.setOnClickListener { onItemClick.invoke(note) }
         }
     }
 }

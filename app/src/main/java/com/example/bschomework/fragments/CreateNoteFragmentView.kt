@@ -2,12 +2,11 @@ package com.example.bschomework.fragments
 
 import androidx.lifecycle.LifecycleCoroutineScope
 
-interface NoteDataFragmentView {
-    fun showButtons()
-    fun hideButtons()
+interface CreateNoteFragmentView {
     fun savedToast()
     fun notSavedToast()
     fun getLifecycleScope(): LifecycleCoroutineScope
+    fun showSaveMenuItem()
+    fun hideSaveMenuItem()
     fun save()
-    fun getTextForShare() : String
 }

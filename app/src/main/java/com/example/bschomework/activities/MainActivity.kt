@@ -1,54 +1,27 @@
 package com.example.bschomework.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import com.example.bschomework.R
 import com.example.bschomework.databinding.ActivityMainBinding
-import com.example.bschomework.presenters.MainActivityPresenter
-import java.io.File
+import com.example.bschomework.fragments.CreateNoteFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainActivity : AppCompatActivity(), MainActivityView {
 
     private var menu: Menu? = null
-    private lateinit var binding: ActivityMainBinding
-
-    private lateinit var photoUri: Uri
-
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-
-            setPhotoUri()
-
-            getCameraContent.launch(photoUri)
-        }
-    }
-
-    private val getCameraContent = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { result ->
-
-        if (result) {
-            binding.photoIv.visibility = View.VISIBLE
-            binding.photoIv.setImageURI(photoUri)
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.presenter = MainActivityPresenter(this)
+        DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main).run {
+            setSupportActionBar(toolbar)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -61,6 +34,14 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         return when (item.itemId) {
+            R.id.save_menu_item -> {
+                saveMenuButtonClicked()
+                true
+            }
+            R.id.add_menu_item -> {
+                addMenuItemClicked()
+                true
+            }
             R.id.about_menu_item -> {
                 aboutMenuItemClicked()
                 true
@@ -69,16 +50,27 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         }
     }
 
-    private fun aboutMenuItemClicked() {
-        startActivity(Intent(this, AboutActivity::class.java))
+    private fun saveMenuButtonClicked() {
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.question_save_note))
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                (supportFragmentManager.findFragmentById(R.id.fragment_container) as CreateNoteFragment).save()
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+            .show()
     }
 
-    private fun setPhotoUri() {
-        photoUri = FileProvider.getUriForFile(
-            this,
-            "com.example.bschomework.fileprovider",
-            File(filesDir, "temp.jpg")
-        )
+    private fun addMenuItemClicked() {
+        supportFragmentManager.beginTransaction().run {
+            replace(R.id.fragment_container, CreateNoteFragment())
+            addToBackStack(null)
+            commit()
+        }
+    }
+
+    private fun aboutMenuItemClicked() {
+        startActivity(Intent(this, AboutActivity::class.java))
     }
 
     override fun savedToast() {
@@ -89,7 +81,19 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         Toast.makeText(this, getString(R.string.not_saved), Toast.LENGTH_SHORT).show()
     }
 
-    override fun photoButtonClicked() {
-        requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+    override fun hideAddMenuItem() {
+        menu?.findItem(R.id.add_menu_item)?.isVisible = false
+    }
+
+    override fun showAddMenuItem() {
+        menu?.findItem(R.id.add_menu_item)?.isVisible = true
+    }
+
+    override fun hideSaveMenuItem() {
+        menu?.findItem(R.id.save_menu_item)?.isVisible = false
+    }
+
+    override fun showSaveMenuItem() {
+        menu?.findItem(R.id.save_menu_item)?.isVisible = true
     }
 }

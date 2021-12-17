@@ -1,21 +1,17 @@
 package com.example.bschomework.presenters
 
-import android.os.Bundle
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import com.example.bschomework.App
 import com.example.bschomework.BR
-import com.example.bschomework.fragments.NoteDataFragment
-import com.example.bschomework.fragments.NoteDataFragmentView
+import com.example.bschomework.fragments.CreateNoteFragmentView
+import com.example.bschomework.room.NoteData
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
-class NoteDataFragmentPresenter(private val view: NoteDataFragmentView, arguments: Bundle?) :
-    BaseObservable() {
+class CreateNoteFragmentPresenter(private val view: CreateNoteFragmentView) : BaseObservable() {
 
     private val db = App.instance.database
-
-    var id = 0L
 
     @get:Bindable
     var header: String by Delegates.observable("") { _, _, _ ->
@@ -29,27 +25,11 @@ class NoteDataFragmentPresenter(private val view: NoteDataFragmentView, argument
         setButtonsVisibility()
     }
 
-    init {
-        id = arguments?.getLong(NoteDataFragment.NOTE_ID) as Long
-
-        setData()
-    }
-
-    private fun setData() {
-        view.getLifecycleScope().launch {
-            db.noteDao().getNoteById(id).let {
-                header = it.header
-                note = it.note
-            }
-        }
-    }
-
     private fun setButtonsVisibility() {
-
         if (checkData()) {
-            view.showButtons()
+            view.showSaveMenuItem()
         } else {
-            view.hideButtons()
+            view.hideSaveMenuItem()
         }
     }
 
@@ -57,14 +37,10 @@ class NoteDataFragmentPresenter(private val view: NoteDataFragmentView, argument
         if (checkData()) {
 
             view.getLifecycleScope().launch {
-                db.noteDao().getNoteById(id).let {
-                    it.header = header
-                    it.note = note
-                    db.noteDao().update(it)
-                }
+                db.noteDao().insert(NoteData(header, note))
             }
-            view.savedToast()
 
+            view.savedToast()
         } else {
             view.notSavedToast()
         }
