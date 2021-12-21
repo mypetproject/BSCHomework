@@ -8,7 +8,7 @@ import com.example.bschomework.activities.EditNotesActivity
 import com.example.bschomework.activities.MainActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class SaveAlertDialogFragment : DialogFragment(){
+class SaveAlertDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.question_save_note))

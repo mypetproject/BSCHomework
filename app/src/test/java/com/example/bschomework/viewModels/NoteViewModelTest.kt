@@ -1,11 +1,10 @@
 package com.example.bschomework.viewModels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.room.Room
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.room.NotesDatabase
+import com.example.bschomework.room.NotesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
@@ -14,11 +13,13 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
 import java.io.IOException
 
 
@@ -34,15 +35,16 @@ class NoteViewModelTest {
     private lateinit var db: NotesDatabase
     private lateinit var noteDataForInsert: NoteData
     private lateinit var noteDataForEdit: NoteData
+    private lateinit var repository: NotesRepository
 
     @ExperimentalCoroutinesApi
     private val testDispatcher = UnconfinedTestDispatcher()
 
-    @ExperimentalCoroutinesApi
-    @Before
+
+    /*@Before
     fun setupDispatcher() {
-        Dispatchers.setMain(testDispatcher)
-    }
+
+    }*/
 
     @ExperimentalCoroutinesApi
     @After
@@ -57,50 +59,38 @@ class NoteViewModelTest {
         db.close()
     }
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
+        Dispatchers.setMain(testDispatcher)
 
-        db = Room.inMemoryDatabaseBuilder(
+        /*db = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
             NotesDatabase::class.java
         )
             .allowMainThreadQueries()
-            .build()
+            .build()*/
 
-        modelForInsertItem = NoteViewModel(db)
-
-        noteDataForInsert = NoteData("header", "note").apply { id = 1 }
+        noteDataForInsert = NoteData("header", "note").apply { id = 1L }
         noteDataForEdit = NoteData("edited_header", "edited_note")
 
-        modelForEditItem = NoteViewModel(db, noteDataForInsert.id)
-    }
+        // repository = mock(NotesRepository::class.java)
 
+        repository = mock()/*<NotesRepository> {
+            onBlocking {
+                getNoteById(anyLong())
+            } doReturn (noteDataForInsert)
+        }*/
+
+
+        modelForInsertItem = NoteViewModel(repository)
+       // modelForEditItem = NoteViewModel(repository, noteDataForInsert.id)
+
+    }
     @Test
     fun checkId() {
         assertTrue(modelForInsertItem.id < 0)
         assertTrue(modelForEditItem.id > 0)
-    }
-
-    @Test
-    fun getNoteDataById() = runBlocking {
-        saveData()
-        assertEquals(null, modelForInsertItem.getNoteById(modelForInsertItem.id) )
-        assertTrue(modelForEditItem.getNoteById(modelForEditItem.id) != null)
-    }
-
-    @Test
-    fun checkEmptyNotes() = runBlocking {
-        modelForInsertItem.notes.observeForever {
-            assertTrue(it.isNullOrEmpty())
-        }
-    }
-
-    @Test
-    fun checkNotEmptyNotes() = runBlocking {
-        saveData()
-        modelForInsertItem.notes.observeForever {
-            assertTrue(it.isNotEmpty())
-        }
     }
 
     @Test
@@ -131,9 +121,6 @@ class NoteViewModelTest {
             successSaved = true
         }
         assertTrue(successSaved)
-
-        val actualData = modelForEditItem.getNoteById(modelForEditItem.id)
-        assertEquals(noteDataForEdit, actualData)
     }
 
     @Test

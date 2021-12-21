@@ -31,6 +31,7 @@ android {
     }
     buildFeatures {
         dataBinding true
+        viewBinding true
     }
 
     testOptions {
@@ -39,8 +40,6 @@ android {
         }
     }
 }
-
-
 
 dependencies {
 
@@ -54,8 +53,8 @@ dependencies {
 
     testImplementation "android.arch.core:core-testing:1.1.1"
     testImplementation 'androidx.test.ext:junit-ktx:1.1.3'
-
     testImplementation 'org.robolectric:robolectric:4.7.3'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:4.0.0'
 
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0-RC3'
 

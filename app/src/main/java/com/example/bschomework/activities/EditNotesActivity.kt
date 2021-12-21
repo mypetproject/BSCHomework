@@ -8,15 +8,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.adapters.NotesListViewPagerAdapter
 import com.example.bschomework.databinding.ActivityEditNotesBinding
-import com.example.bschomework.fragments.EditNoteFragment
+import com.example.bschomework.fragments.NoteFragment
 import com.example.bschomework.fragments.SaveAlertDialogFragment
 import com.example.bschomework.room.NoteData
-import com.example.bschomework.room.NotesDatabase
-import com.example.bschomework.viewModels.NoteViewModel
-import com.example.bschomework.viewModels.NoteViewModelFactory
+import com.example.bschomework.viewModels.NotesListViewModel
+import com.example.bschomework.viewModels.NotesListViewModelFactory
 import kotlinx.coroutines.launch
 
 class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
@@ -27,11 +27,9 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private val adapter by lazy { NotesListViewPagerAdapter(this) }
 
-    private val model: NoteViewModel by viewModels {
-        NoteViewModelFactory(
-            NotesDatabase.getDatabase(
-                this
-            )
+    private val model: NotesListViewModel by viewModels {
+        NotesListViewModelFactory(
+            (application as App).repository
         )
     }
 
@@ -74,7 +72,6 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         setCurrentPagerPosition = false
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_edit_note_menu, menu)
         this.menu = menu
@@ -106,7 +103,7 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
     }
 
     override fun saveAlertDialogOKButtonClicked() {
-        (adapter.fragments[binding.pager.currentItem] as EditNoteFragment).save()
+        (adapter.fragments[binding.pager.currentItem] as NoteFragment).save()
     }
 
     private fun aboutMenuItemClicked() {
@@ -118,19 +115,19 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
             type = "text/plain"
             putExtra(
                 Intent.EXTRA_TEXT,
-                (adapter.fragments[binding.pager.currentItem] as EditNoteFragment).getTextForShare()
+                (adapter.fragments[binding.pager.currentItem] as NoteFragment).getTextForShare()
             )
         })
     }
 
-    override fun showButtons() {
+    override fun showMenuItems() {
         menu?.run {
             findItem(R.id.share_menu_item)?.isVisible = true
             findItem(R.id.save_menu_item)?.isVisible = true
         }
     }
 
-    override fun hideButtons() {
+    override fun hideMenuItems() {
         menu?.run {
             findItem(R.id.share_menu_item)?.isVisible = false
             findItem(R.id.save_menu_item)?.isVisible = false
@@ -141,7 +138,6 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         onBackPressed()
         return super.onSupportNavigateUp()
     }
-
 
     companion object {
         const val EXTRA_LONG = "extra_long"
