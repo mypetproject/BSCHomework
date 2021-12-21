@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.bschomework.R
 import com.example.bschomework.databinding.ActivityMainBinding
-import com.example.bschomework.fragments.CreateNoteFragment
+import com.example.bschomework.fragments.NoteFragment
 import com.example.bschomework.fragments.SaveAlertDialogFragment
 
 class MainActivity : AppCompatActivity(), MainActivityView {
@@ -54,12 +54,12 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     override fun saveAlertDialogOKButtonClicked() {
-        (supportFragmentManager.findFragmentById(R.id.fragment_container) as CreateNoteFragment).save()
+        (supportFragmentManager.findFragmentById(R.id.fragment_container) as NoteFragment).save()
     }
 
     private fun addMenuItemClicked() {
         supportFragmentManager.beginTransaction().run {
-            replace(R.id.fragment_container, CreateNoteFragment())
+            replace(R.id.fragment_container, NoteFragment())
             addToBackStack(null)
             commit()
         }

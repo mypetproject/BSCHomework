@@ -1,37 +1,44 @@
 package com.example.bschomework.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.activities.EditNotesActivity
-import com.example.bschomework.databinding.FragmentEditNoteBinding
-import com.example.bschomework.room.NotesDatabase
+import com.example.bschomework.activities.MainActivity
+import com.example.bschomework.databinding.FragmentNoteBinding
 import com.example.bschomework.viewModels.NoteViewModel
 import com.example.bschomework.viewModels.NoteViewModelFactory
 
+class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
 
-class EditNoteFragment : Fragment(R.layout.fragment_edit_note), EditNoteFragmentView {
+    private val model: NoteViewModel by viewModels {
 
-    val model: NoteViewModel by viewModels {
-        NoteViewModelFactory(
-            NotesDatabase.getDatabase(context as Context), arguments?.getLong(NOTE_ID) as Long
-        )
+        arguments?.run {
+            NoteViewModelFactory(
+                (activity?.application as App).repository,
+                getLong(NOTE_ID)
+            )
+        } ?: NoteViewModelFactory(
+                (activity?.application as App).repository
+            )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentEditNoteBinding.inflate(inflater, container, false).also {
+    ): View = DataBindingUtil.inflate<FragmentNoteBinding>(inflater,R.layout.fragment_note, container, false).also {
         it.model = model
         it.lifecycleOwner = this
         subscribeToViewModel()
+        if (activity is MainActivity) (activity as MainActivity).hideAddMenuItem()
     }.root
 
     private fun subscribeToViewModel() {
@@ -53,11 +60,21 @@ class EditNoteFragment : Fragment(R.layout.fragment_edit_note), EditNoteFragment
         }
 
         model.onShowMenuItemsEvent.observe(this) {
-            (activity as EditNotesActivity).showButtons()
+            when (activity) {
+                is MainActivity ->
+                    (activity as MainActivity).showSaveMenuItem()
+                is EditNotesActivity ->
+                    (activity as EditNotesActivity).showMenuItems()
+            }
         }
 
         model.onHideMenuItemsEvent.observe(this) {
-            (activity as EditNotesActivity).hideButtons()
+            when (activity) {
+                is MainActivity ->
+                    (activity as MainActivity).hideSaveMenuItem()
+                is EditNotesActivity ->
+                    (activity as EditNotesActivity).hideMenuItems()
+            }
         }
     }
 
@@ -76,7 +93,7 @@ class EditNoteFragment : Fragment(R.layout.fragment_edit_note), EditNoteFragment
     companion object {
         const val NOTE_ID = "note_id"
 
-        fun newInstance(id: Long) = EditNoteFragment().apply {
+        fun newInstance(id: Long) = NoteFragment().apply {
             arguments = Bundle().apply { putLong(NOTE_ID, id) }
         }
     }
