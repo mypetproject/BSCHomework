@@ -13,6 +13,11 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
     val header: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
     val note: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
 
+    val onSaveSuccessEvent = SingleLiveEvent<Unit>()
+    val onSaveNotSuccessEvent = SingleLiveEvent<Unit>()
+    val onShowMenuItemsEvent = SingleLiveEvent<Unit>()
+    val onHideMenuItemsEvent = SingleLiveEvent<Unit>()
+
     var id = -1L
 
     constructor(repository: NotesRepository, id: Long) : this(repository) {
@@ -26,11 +31,6 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
             note.value = it?.note
         }
     }
-
-    val onSaveSuccessEvent = SingleLiveEvent<Unit>()
-    val onSaveNotSuccessEvent = SingleLiveEvent<Unit>()
-    val onShowMenuItemsEvent = SingleLiveEvent<Unit>()
-    val onHideMenuItemsEvent = SingleLiveEvent<Unit>()
 
     fun setMenuItemsVisibility() {
         if (checkData()) {

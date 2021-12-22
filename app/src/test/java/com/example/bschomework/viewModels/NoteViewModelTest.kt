@@ -1,9 +1,8 @@
 package com.example.bschomework.viewModels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.bschomework.room.NoteDao
 import com.example.bschomework.room.NoteData
-import com.example.bschomework.room.NotesDatabase
 import com.example.bschomework.room.NotesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,11 +18,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
+import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.kotlin.*
 import java.io.IOException
 
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(JUnit4::class)
 class NoteViewModelTest {
 
     @Rule
@@ -32,61 +33,39 @@ class NoteViewModelTest {
 
     private lateinit var modelForInsertItem: NoteViewModel
     private lateinit var modelForEditItem: NoteViewModel
-    private lateinit var db: NotesDatabase
-    private lateinit var noteDataForInsert: NoteData
-    private lateinit var noteDataForEdit: NoteData
+    private lateinit var noteData: NoteData
     private lateinit var repository: NotesRepository
+    private lateinit var noteDao: NoteDao
 
     @ExperimentalCoroutinesApi
     private val testDispatcher = UnconfinedTestDispatcher()
-
-
-    /*@Before
-    fun setupDispatcher() {
-
-    }*/
-
-    @ExperimentalCoroutinesApi
-    @After
-    fun tearDownDispatcher() {
-        Dispatchers.resetMain()
-        testDispatcher.cancel()
-    }
-
-    @After
-    @Throws(IOException::class)
-    fun closeDb() {
-        db.close()
-    }
 
     @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
 
-        /*db = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            NotesDatabase::class.java
-        )
-            .allowMainThreadQueries()
-            .build()*/
+        noteData = NoteData("header", "note")
 
-        noteDataForInsert = NoteData("header", "note").apply { id = 1L }
-        noteDataForEdit = NoteData("edited_header", "edited_note")
+        noteDao = mock {
+            onBlocking { getNoteById(-1L) } doReturn (null)
+            onBlocking { getNoteById(1L) } doReturn (noteData)
+        }
 
-        // repository = mock(NotesRepository::class.java)
-
-        repository = mock()/*<NotesRepository> {
-            onBlocking {
-                getNoteById(anyLong())
-            } doReturn (noteDataForInsert)
-        }*/
-
+        repository = NotesRepository(noteDao)
 
         modelForInsertItem = NoteViewModel(repository)
-       // modelForEditItem = NoteViewModel(repository, noteDataForInsert.id)
-
+        modelForEditItem = NoteViewModel(repository,1L)
     }
+
+    @ExperimentalCoroutinesApi
+    @After
+    @Throws(IOException::class)
+    fun tearDownDispatcher() {
+        Dispatchers.resetMain()
+        testDispatcher.cancel()
+    }
+
     @Test
     fun checkId() {
         assertTrue(modelForInsertItem.id < 0)
@@ -104,22 +83,29 @@ class NoteViewModelTest {
         modelForInsertItem.onSaveSuccessEvent.observeForever {
             successSaved = true
         }
+
+        verify(noteDao).insert(any())
+        verify(noteDao, times(2)).getNoteById(anyLong())
+
         assertTrue(successSaved)
     }
 
     @Test
     fun updateData() = runBlocking {
 
-        saveData()
-
-        modelForEditItem.header.value = noteDataForEdit.header
-        modelForEditItem.note.value = noteDataForEdit.note
+        modelForEditItem.header.value = "edited_header"
+        modelForEditItem.note.value = "edited_note"
         modelForEditItem.saveData()
+
 
         var successSaved = false
         modelForEditItem.onSaveSuccessEvent.observeForever {
             successSaved = true
         }
+
+        verify(noteDao).update(any())
+        verify(noteDao, times(2)).getNoteById(anyLong())
+
         assertTrue(successSaved)
     }
 
@@ -140,6 +126,9 @@ class NoteViewModelTest {
         modelForInsertItem.onSaveNotSuccessEvent.observeForever {
             failSaving = true
         }
+
+        verify(noteDao).getNoteById(anyLong())
+
         assertTrue(failSaving)
     }
 

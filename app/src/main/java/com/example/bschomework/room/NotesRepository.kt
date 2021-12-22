@@ -2,18 +2,17 @@ package com.example.bschomework.room
 
 import androidx.lifecycle.LiveData
 
-open class NotesRepository(private val db: NotesDatabase) {
+open class NotesRepository(private val dao: NoteDao) {
 
-    val allNotes : LiveData<List<NoteData>> = db.noteDao().getAllNotes()
+    val allNotes: LiveData<List<NoteData>> by lazy { dao.getAllNotes() }
 
     suspend fun insert(noteData: NoteData) {
-        db.noteDao().insert(noteData)
+        dao.insert(noteData)
     }
 
     suspend fun update(noteData: NoteData) {
-        db.noteDao().update(noteData)
+        dao.update(noteData)
     }
 
-    suspend fun getNoteById(id: Long): NoteData? =
-        db.noteDao().getNoteById(id)
+    suspend fun getNoteById(id: Long): NoteData? = dao.getNoteById(id)
 }

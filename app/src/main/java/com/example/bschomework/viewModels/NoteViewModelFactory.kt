@@ -18,5 +18,4 @@ class NoteViewModelFactory(private val repository: NotesRepository) :
         return if (id >= 0) NoteViewModel(repository, id) as T
         else NoteViewModel(repository) as T
     }
-
 }
