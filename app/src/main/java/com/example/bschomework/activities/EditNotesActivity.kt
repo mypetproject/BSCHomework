@@ -4,16 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
+import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.adapters.NotesListViewPagerAdapter
 import com.example.bschomework.databinding.ActivityEditNotesBinding
-import com.example.bschomework.fragments.NoteDataFragment
-import com.example.bschomework.presenters.EditNotesActivityPresenter
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.example.bschomework.fragments.NoteFragment
+import com.example.bschomework.fragments.SaveAlertDialogFragment
+import com.example.bschomework.room.NoteData
+import com.example.bschomework.viewModels.NotesListViewModel
+import com.example.bschomework.viewModels.NotesListViewModelFactory
 import kotlinx.coroutines.launch
 
 class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
@@ -24,13 +27,19 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private val adapter by lazy { NotesListViewPagerAdapter(this) }
 
+    private val model: NotesListViewModel by viewModels {
+        NotesListViewModelFactory(
+            (application as App).repository
+        )
+    }
+
+    private var setCurrentPagerPosition = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_notes)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        val presenter = EditNotesActivityPresenter(this)
 
         binding = DataBindingUtil.setContentView<ActivityEditNotesBinding>(
             this,
@@ -42,17 +51,33 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
             setSupportActionBar(toolbar)
 
-            lifecycleScope.launch {
-                pager.adapter = adapter.also {
-                    it.items = presenter.getNotes()
+            pager.adapter =
+                adapter.also {
+                    model.run {
+                        notes.observe(this@EditNotesActivity, { notes ->
+                            it.items = notes
+                            if (setCurrentPagerPosition) setPagerCurrentItem(notes)
+                        })
+                        it.fragments = fragments
+                    }
                 }
-                presenter.setPagerCurrentItem(intent)
-            }
         }
     }
 
-    override fun setPagerCurrentItem(position: Int) {
-        binding.pager.setCurrentItem(position, false)
+    override fun onDestroy() {
+        super.onDestroy()
+        model.fragments = adapter.fragments
+    }
+
+    private fun setPagerCurrentItem(notes: List<NoteData>) = lifecycleScope.launch {
+        binding.pager.setCurrentItem(
+            notes.indexOf(
+                model.getNoteById(
+                    intent.getLongExtra(EXTRA_LONG, 0L)
+                )
+            ), false
+        )
+        setCurrentPagerPosition = false
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -82,14 +107,11 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
     }
 
     private fun saveMenuItemClicked() {
+        SaveAlertDialogFragment().show(supportFragmentManager, SaveAlertDialogFragment.TAG)
+    }
 
-        MaterialAlertDialogBuilder(this)
-            .setTitle(getString(R.string.question_save_note))
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                (adapter.fragments[binding.pager.currentItem] as NoteDataFragment).save()
-                }
-            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
-            .show()
+    override fun saveAlertDialogOKButtonClicked() {
+        (adapter.fragments[binding.pager.currentItem] as NoteFragment).save()
     }
 
     private fun aboutMenuItemClicked() {
@@ -101,31 +123,23 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
             type = "text/plain"
             putExtra(
                 Intent.EXTRA_TEXT,
-                (adapter.fragments[binding.pager.currentItem] as NoteDataFragment).getTextForShare()
+                (adapter.fragments[binding.pager.currentItem] as NoteFragment).getTextForShare()
             )
         })
     }
 
-    override fun showButtons() {
+    override fun showMenuItems() {
         menu?.run {
             findItem(R.id.share_menu_item)?.isVisible = true
             findItem(R.id.save_menu_item)?.isVisible = true
         }
     }
 
-    override fun hideButtons() {
+    override fun hideMenuItems() {
         menu?.run {
             findItem(R.id.share_menu_item)?.isVisible = false
             findItem(R.id.save_menu_item)?.isVisible = false
         }
-    }
-
-    override fun savedToast() {
-        Toast.makeText(this, getString(R.string.saved), Toast.LENGTH_SHORT).show()
-    }
-
-    override fun notSavedToast() {
-        Toast.makeText(this, getString(R.string.not_saved), Toast.LENGTH_SHORT).show()
     }
 
     override fun onSupportNavigateUp(): Boolean {

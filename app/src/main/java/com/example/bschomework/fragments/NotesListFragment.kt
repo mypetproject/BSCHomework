@@ -6,40 +6,41 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
+import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.activities.EditNotesActivity
 import com.example.bschomework.activities.MainActivity
 import com.example.bschomework.adapters.NotesListAdapter
 import com.example.bschomework.databinding.FragmentNotesListBinding
-import com.example.bschomework.presenters.NotesListFragmentPresenter
 import com.example.bschomework.room.NoteData
+import com.example.bschomework.viewModels.NotesListViewModel
+import com.example.bschomework.viewModels.NotesListViewModelFactory
 
-class NotesListFragment : Fragment(R.layout.fragment_notes_list), NotesListFragmentView {
+class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
-    val presenter = NotesListFragmentPresenter(this)
-
-    private var adapter = NotesListAdapter(presenter.notes) { noteData: NoteData ->
-        presenter.onNotesListItemClick(noteData)
+    private val model: NotesListViewModel by viewModels {
+        NotesListViewModelFactory(
+            (activity?.application as App).repository
+        )
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-
-        FragmentNotesListBinding.inflate(inflater, container, false).run {
-            notesRecyclerview.adapter = adapter
-            return root
-        }
-    }
+    ): View =
+        FragmentNotesListBinding.inflate(inflater, container, false).apply {
+            model.notes.observe(this@NotesListFragment, { notes ->
+                notesRecyclerview.adapter =
+                    NotesListAdapter(notes) { noteData: NoteData ->
+                        notesListItemClicked(noteData)
+                    }
+            })
+        }.root
 
     override fun onResume() {
         super.onResume()
-
-        presenter.updateNotesList()
 
         (activity as MainActivity).run {
             showAddMenuItem()
@@ -47,17 +48,10 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list), NotesListFragm
         }
     }
 
-    override fun notesListItemClicked(noteData: NoteData) {
-
+    private fun notesListItemClicked(noteData: NoteData) {
         startActivity(
             Intent(this.context, EditNotesActivity::class.java)
                 .putExtra(EditNotesActivity.EXTRA_LONG, noteData.id)
         )
-    }
-
-    override fun getLifecycleScope(): LifecycleCoroutineScope = lifecycleScope
-
-    override fun notifyAdapter() {
-        adapter.notifyDataSetChanged()
     }
 }

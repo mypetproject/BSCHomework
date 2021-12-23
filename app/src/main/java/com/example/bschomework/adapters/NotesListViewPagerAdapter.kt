@@ -3,7 +3,7 @@ package com.example.bschomework.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.bschomework.fragments.NoteDataFragment
+import com.example.bschomework.fragments.NoteFragment
 import com.example.bschomework.room.NoteData
 
 class NotesListViewPagerAdapter(fragmentActivity: FragmentActivity) :
@@ -17,10 +17,8 @@ class NotesListViewPagerAdapter(fragmentActivity: FragmentActivity) :
 
     override fun createFragment(position: Int): Fragment {
 
-        return NoteDataFragment.newInstance(items[position].id).also {
+        return NoteFragment.newInstance(items[position].id).also {
             fragments[position] = it
         }
     }
-
-
 }
