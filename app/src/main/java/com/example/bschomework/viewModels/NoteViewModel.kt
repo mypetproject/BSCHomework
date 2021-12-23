@@ -13,12 +13,12 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
     val header: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
     val note: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
 
+    var id = 0L
+
     val onSaveSuccessEvent = SingleLiveEvent<Unit>()
     val onSaveNotSuccessEvent = SingleLiveEvent<Unit>()
     val onShowMenuItemsEvent = SingleLiveEvent<Unit>()
     val onHideMenuItemsEvent = SingleLiveEvent<Unit>()
-
-    var id = -1L
 
     constructor(repository: NotesRepository, id: Long) : this(repository) {
         this.id = id
@@ -43,13 +43,15 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
     fun saveData() = viewModelScope.launch {
         if (checkData()) {
 
-            repository.getNoteById(id)?.let {
-                it.header = header.value.toString()
-                it.note = note.value.toString()
-                repository.update(it)
-            } ?: repository.insert(NoteData(header.value.toString(), note.value.toString()))
+            NoteData(header.value.toString(), note.value.toString()).let {
+                if (id > 0) {
+                    it.id = id
+                    repository.update(it)
+                } else repository.insert(it)
+            }
 
             onSaveSuccessEvent.call()
+
         } else {
             onSaveNotSuccessEvent.call()
         }

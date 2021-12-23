@@ -21,6 +21,4 @@ class NotesListViewPagerAdapter(fragmentActivity: FragmentActivity) :
             fragments[position] = it
         }
     }
-
-
 }

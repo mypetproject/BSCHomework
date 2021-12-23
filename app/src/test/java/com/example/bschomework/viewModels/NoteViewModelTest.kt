@@ -20,7 +20,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import java.io.IOException
 
 
@@ -48,7 +51,7 @@ class NoteViewModelTest {
         noteData = NoteData("header", "note")
 
         noteDao = mock {
-            onBlocking { getNoteById(-1L) } doReturn (null)
+            onBlocking { getNoteById(0L) } doReturn (null)
             onBlocking { getNoteById(1L) } doReturn (noteData)
         }
 
@@ -68,12 +71,12 @@ class NoteViewModelTest {
 
     @Test
     fun checkId() {
-        assertTrue(modelForInsertItem.id < 0)
-        assertTrue(modelForEditItem.id > 0)
+        assertTrue(modelForInsertItem.id == 0L)
+        assertTrue(modelForEditItem.id > 0L)
     }
 
     @Test
-    fun saveData() = runBlocking {
+    fun insertData() = runBlocking {
 
         modelForInsertItem.header.value = "header"
         modelForInsertItem.note.value = "note"
@@ -85,7 +88,7 @@ class NoteViewModelTest {
         }
 
         verify(noteDao).insert(any())
-        verify(noteDao, times(2)).getNoteById(anyLong())
+        verify(noteDao).getNoteById(anyLong())
 
         assertTrue(successSaved)
     }
@@ -104,7 +107,7 @@ class NoteViewModelTest {
         }
 
         verify(noteDao).update(any())
-        verify(noteDao, times(2)).getNoteById(anyLong())
+        verify(noteDao).getNoteById(anyLong())
 
         assertTrue(successSaved)
     }

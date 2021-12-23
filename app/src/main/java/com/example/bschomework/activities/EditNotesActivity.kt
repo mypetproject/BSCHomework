@@ -53,12 +53,20 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
             pager.adapter =
                 adapter.also {
-                    model.notes.observe(this@EditNotesActivity, { notes ->
-                        it.items = notes
-                        if (setCurrentPagerPosition) setPagerCurrentItem(notes)
-                    })
+                    model.run {
+                        notes.observe(this@EditNotesActivity, { notes ->
+                            it.items = notes
+                            if (setCurrentPagerPosition) setPagerCurrentItem(notes)
+                        })
+                        it.fragments = fragments
+                    }
                 }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        model.fragments = adapter.fragments
     }
 
     private fun setPagerCurrentItem(notes: List<NoteData>) = lifecycleScope.launch {
