@@ -79,7 +79,7 @@ class NoteViewModelTest {
     fun insertData() = runBlocking {
 
         modelForInsertItem.header.value = "header"
-        modelForInsertItem.note.value = "note"
+        modelForInsertItem.content.value = "note"
         modelForInsertItem.saveData()
 
         var successSaved = false
@@ -97,7 +97,7 @@ class NoteViewModelTest {
     fun updateData() = runBlocking {
 
         modelForEditItem.header.value = "edited_header"
-        modelForEditItem.note.value = "edited_note"
+        modelForEditItem.content.value = "edited_note"
         modelForEditItem.saveData()
 
 
@@ -116,7 +116,7 @@ class NoteViewModelTest {
     fun tryToSaveEmptyData() = runBlocking {
 
         modelForInsertItem.header.value = ""
-        modelForInsertItem.note.value = ""
+        modelForInsertItem.content.value = ""
         modelForInsertItem.saveData()
 
         var successSaved = false
@@ -138,7 +138,7 @@ class NoteViewModelTest {
     @Test
     fun setMenuItemVisibility() {
         modelForInsertItem.header.value = "header"
-        modelForInsertItem.note.value = "note"
+        modelForInsertItem.content.value = "note"
         modelForInsertItem.setMenuItemsVisibility()
 
         var successSaved = false
@@ -151,7 +151,7 @@ class NoteViewModelTest {
     @Test
     fun setMenuItemVisibilityEmptyHeader() {
         modelForInsertItem.header.value = ""
-        modelForInsertItem.note.value = "note"
+        modelForInsertItem.content.value = "note"
         modelForInsertItem.setMenuItemsVisibility()
 
         var successShowMenuItems = false
@@ -170,7 +170,7 @@ class NoteViewModelTest {
     @Test
     fun setMenuItemVisibilityEmptyNote() {
         modelForInsertItem.header.value = "header"
-        modelForInsertItem.note.value = ""
+        modelForInsertItem.content.value = ""
         modelForInsertItem.setMenuItemsVisibility()
 
         var successShowMenuItems = false

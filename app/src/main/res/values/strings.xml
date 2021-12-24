@@ -23,4 +23,8 @@
     <string name="add_button">Кнопка добавить</string>
     <string name="about_the_app_button">Кнопка о приложении</string>
     <string name="share_note_button">Кнопка поделиться заметкой</string>
+
+    <string name="download_note">Загрузить заметку</string>
+    <string name="downloaded">Загружено</string>
+    <string name="download_failed">Загрузка не удалась</string>
 </resources>

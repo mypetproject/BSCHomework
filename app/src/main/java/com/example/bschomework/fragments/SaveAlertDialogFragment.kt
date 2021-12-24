@@ -10,7 +10,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SaveAlertDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return MaterialAlertDialogBuilder(requireContext())
+        return MaterialAlertDialogBuilder(
+            requireContext(),
+            R.style.Theme_BSCHomework_MaterialAlertDialog
+        )
             .setTitle(getString(R.string.question_save_note))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 when (activity) {

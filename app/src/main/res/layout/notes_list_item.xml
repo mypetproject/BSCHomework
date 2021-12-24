@@ -10,6 +10,7 @@
 
     <TextView
         android:id="@+id/header_rv"
+        style="@style/Theme.BSCHomework.TextView.Holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"

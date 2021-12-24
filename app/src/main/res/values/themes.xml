@@ -14,9 +14,48 @@
         <!-- Customize your theme here. -->
 
         <item name="colorNotesListHolderPressed">@color/holder_notes_list_background_pressed</item>
-        <item name="colorNotesListHolderSelected">@color/holder_notes_list_background_selected</item>
-        <item name="colorNotesListHolderUnselected">@color/holder_notes_list_background_unselected</item>
+        <item name="colorNotesListHolderSelected">@color/holder_notes_list_background_selected
+        </item>
+        <item name="colorNotesListHolderUnselected">@color/holder_notes_list_background_unselected
+        </item>
 
+    </style>
+
+    <style name="Theme.BSCHomework.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/black</item>
+        <item name="boxStrokeWidth">@dimen/box_stroke_width</item>
+    </style>
+
+    <style name="Theme.BSCHomework.TextInputEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/purple_500</item>
+        <item name="android:textSize">@dimen/TIET_text_size</item>
+    </style>
+
+    <style name="Theme.BSCHomework.Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/purple_200</item>
+    </style>
+
+    <style name="Theme.BSCHomework.TextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/TextView_text_size</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="Theme.BSCHomework.TextView.Holder" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">@dimen/TextView_text_size</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="Theme.BSCHomework.CircularProgressIndicator" parent="Widget.MaterialComponents.CircularProgressIndicator">
+        <item name="trackThickness">@dimen/track_thickness</item>
+    </style>
+
+    <style name="Theme.BSCHomework.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:backgroundTint">@color/purple_200</item>
+    </style>
+
+    <style name="Theme.BSCHomework.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:textSize">@dimen/TextView_text_size</item>
+        <item name="android:typeface">monospace</item>
     </style>
 
 </resources>

@@ -8,4 +8,9 @@
     <dimen name="holder_notes_list_background_radius">24dp</dimen>
     <dimen name="notes_list_holder_height">40dp</dimen>
     <dimen name="notes_list_holder_margin">3dp</dimen>
+    <dimen name="download_button_note_margin">10dp</dimen>
+    <dimen name="box_stroke_width">2dp</dimen>
+    <dimen name="TIET_text_size">20sp</dimen>
+    <dimen name="TextView_text_size">16sp</dimen>
+    <dimen name="track_thickness">20sp</dimen>
 </resources>
