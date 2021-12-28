@@ -77,8 +77,8 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
 
                 onHideProgressIndicatorEvent.call()
 
-                header.value = response.body()?.header ?: ""
-                content.value = response.body()?.content ?: ""
+                header.value = response.body()?.header.orEmpty()
+                content.value = response.body()?.content.orEmpty()
             }
 
             override fun onFailure(call: Call<NoteData>, t: Throwable) {
