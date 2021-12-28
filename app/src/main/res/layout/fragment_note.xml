@@ -22,7 +22,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/header_TIL"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Theme.BSCHomework.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/header_margin"
@@ -34,6 +34,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/header_TIET"
+                    style="@style/Theme.BSCHomework.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="flagNoExtractUi|actionNext"
@@ -43,7 +44,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/notes_TIL"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Theme.BSCHomework.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/notes_margin"
@@ -55,11 +56,36 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/notes_TIET"
+                    style="@style/Theme.BSCHomework.TextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="flagNoExtractUi"
-                    android:text="@={model.note}" />
+                    android:text="@={model.content}" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/download_note_button"
+                style="@style/Theme.BSCHomework.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/download_button_note_margin"
+                android:onClick="@{() -> model.downloadNoteButtonClick()}"
+                android:text="@string/download_note"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/notes_TIL" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress_circular"
+                style="@style/Theme.BSCHomework.CircularProgressIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

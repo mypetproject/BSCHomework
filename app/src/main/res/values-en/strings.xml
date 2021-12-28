@@ -22,4 +22,8 @@
     <string name="add_button">Add button</string>
     <string name="about_the_app_button">About the app button</string>
     <string name="share_note_button">Share note button</string>
+
+    <string name="download_note">Download note</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="download_failed">Download failed</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.bschomework.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,19 +27,27 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
                 getLong(NOTE_ID)
             )
         } ?: NoteViewModelFactory(
-                (activity?.application as App).repository
-            )
+            (activity?.application as App).repository
+        )
     }
+
+    private lateinit var binding: FragmentNoteBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = DataBindingUtil.inflate<FragmentNoteBinding>(inflater,R.layout.fragment_note, container, false).also {
+    ): View = DataBindingUtil.inflate<FragmentNoteBinding>(
+        inflater,
+        R.layout.fragment_note,
+        container,
+        false
+    ).also {
         it.model = model
         it.lifecycleOwner = this
         subscribeToViewModel()
         if (activity is MainActivity) (activity as MainActivity).hideAddMenuItem()
+        binding = it
     }.root
 
     private fun subscribeToViewModel() {
@@ -47,12 +56,17 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
             model.setMenuItemsVisibility()
         }
 
-        model.note.observe(this) {
+        model.content.observe(this) {
             model.setMenuItemsVisibility()
         }
 
         model.onSaveSuccessEvent.observe(this) {
             showToast(getString(R.string.saved))
+            activity?.sendBroadcast(Intent().apply {
+                action = ACTION
+                putExtra(NOTE_HEADER, model.header.value.toString())
+                putExtra(NOTE_CONTENT, model.content.value.toString())
+            })
         }
 
         model.onSaveNotSuccessEvent.observe(this) {
@@ -76,6 +90,21 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
                     (activity as EditNotesActivity).hideMenuItems()
             }
         }
+
+        model.onShowProgressIndicatorEvent.observe(this) {
+            binding.progressCircular.show()
+        }
+
+        model.onHideProgressIndicatorEvent.observe(this) {
+            binding.progressCircular.hide()
+            showToast(getString(R.string.downloaded))
+        }
+
+        model.onFailProgressIndicatorEvent.observe(this) {
+            binding.progressCircular.hide()
+            showToast(getString(R.string.download_failed))
+        }
+
     }
 
     private fun showToast(text: String) {
@@ -87,7 +116,7 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
     }
 
     override fun getTextForShare(): String = model.run {
-        "${header.value.toString()}\n${note.value.toString()}"
+        "${header.value.toString()}\n${content.value.toString()}"
     }
 
     companion object {
@@ -96,5 +125,9 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
         fun newInstance(id: Long) = NoteFragment().apply {
             arguments = Bundle().apply { putLong(NOTE_ID, id) }
         }
+
+        private const val ACTION = "com.example.bschomework.action_saving"
+        private const val NOTE_HEADER = "note_header"
+        private const val NOTE_CONTENT = "note_content"
     }
 }

@@ -9,6 +9,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:theme="@style/Theme.BSCHomework.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:layout_constraintEnd_toEndOf="parent"
@@ -18,6 +19,7 @@
             app:title="@string/about" />
 
         <TextView
+            style="@style/Theme.BSCHomework.TextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/about_layout_margin"
