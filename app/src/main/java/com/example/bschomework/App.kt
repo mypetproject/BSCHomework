@@ -1,11 +1,7 @@
 package com.example.bschomework
 
 import android.app.Application
-import com.example.bschomework.room.NotesDatabase
-import com.example.bschomework.room.NotesRepository
+import dagger.hilt.android.HiltAndroidApp
 
-class App : Application() {
-
-    private val database by lazy { NotesDatabase.getDatabase(this) }
-    val repository by lazy { NotesRepository(database.noteDao()) }
-}
+@HiltAndroidApp
+class App : Application()

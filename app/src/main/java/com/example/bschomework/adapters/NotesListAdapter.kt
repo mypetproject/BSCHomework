@@ -7,10 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bschomework.R
 import com.example.bschomework.databinding.NotesListItemBinding
 import com.example.bschomework.room.NoteData
+import javax.inject.Inject
 
-class NotesListAdapter(
-    private val notes: List<NoteData>,
-    private val onItemClick: ((NoteData) -> Unit)
+//TODO Приемлемо ли инжектить адаптеры для RecyclerView и ViewPager?
+class NotesListAdapter @Inject constructor(
+    var notes: List<NoteData>,
+    private var onItemClick: ((NoteData) -> Unit)
 ) : RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -40,5 +42,9 @@ class NotesListAdapter(
             return if (note.header.isNotEmpty()) "${context.getString(R.string.note_titled)} ${note.header}"
             else context.getString(R.string.untitled_note)
         }
+    }
+
+    fun setOnItemClickListener(listener: (NoteData) -> Unit) {
+        onItemClick = listener
     }
 }

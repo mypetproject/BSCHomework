@@ -10,7 +10,9 @@ import com.example.bschomework.R
 import com.example.bschomework.databinding.ActivityMainBinding
 import com.example.bschomework.fragments.NoteFragment
 import com.example.bschomework.fragments.SaveAlertDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), MainActivityView {
 
     private var menu: Menu? = null
