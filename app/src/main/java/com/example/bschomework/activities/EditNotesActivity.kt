@@ -4,20 +4,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
-import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.adapters.NotesListViewPagerAdapter
+import com.example.bschomework.appComponent
 import com.example.bschomework.databinding.ActivityEditNotesBinding
 import com.example.bschomework.fragments.NoteFragment
 import com.example.bschomework.fragments.SaveAlertDialogFragment
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.viewModels.NotesListViewModel
-import com.example.bschomework.viewModels.NotesListViewModelFactory
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
@@ -25,13 +24,11 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private lateinit var binding: ActivityEditNotesBinding
 
+    //TODO Как заинжектить адаптер без dependency cycle и стоит ли
     private val adapter by lazy { NotesListViewPagerAdapter(this) }
 
-    private val model: NotesListViewModel by viewModels {
-        NotesListViewModelFactory(
-            (application as App).repository
-        )
-    }
+    @Inject
+    lateinit var model: NotesListViewModel
 
     private var setCurrentPagerPosition = true
 
@@ -39,12 +36,15 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_notes)
 
+        applicationContext.appComponent.inject(this)
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding = DataBindingUtil.setContentView<ActivityEditNotesBinding>(
             this,
             R.layout.activity_edit_notes
         ).apply {
+
             toolbar.setNavigationOnClickListener {
                 onBackPressed()
             }
@@ -70,12 +70,9 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
     }
 
     private fun setPagerCurrentItem(notes: List<NoteData>) = lifecycleScope.launch {
+
         binding.pager.setCurrentItem(
-            notes.indexOf(
-                model.getNoteById(
-                    intent.getLongExtra(EXTRA_LONG, 0L)
-                )
-            ), false
+            notes.indexOfFirst { it.id == intent.getLongExtra(EXTRA_LONG, 0L) }, false
         )
         setCurrentPagerPosition = false
     }

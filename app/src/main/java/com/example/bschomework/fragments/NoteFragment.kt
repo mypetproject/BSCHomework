@@ -9,27 +9,24 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.activities.EditNotesActivity
 import com.example.bschomework.activities.MainActivity
+import com.example.bschomework.appComponent
 import com.example.bschomework.databinding.FragmentNoteBinding
 import com.example.bschomework.viewModels.NoteViewModel
 import com.example.bschomework.viewModels.NoteViewModelFactory
+import javax.inject.Inject
 
 class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
 
-    private val model: NoteViewModel by viewModels {
 
-        arguments?.run {
-            NoteViewModelFactory(
-                (activity?.application as App).repository,
-                getLong(NOTE_ID)
-            )
-        } ?: NoteViewModelFactory(
-            (activity?.application as App).repository
-        )
+    private val model: NoteViewModel by viewModels {
+        factory.create(arguments?.getLong(NOTE_ID) ?: -1L)
     }
+
+    @Inject
+    lateinit var factory: NoteViewModelFactory.Factory
 
     private lateinit var binding: FragmentNoteBinding
 
@@ -43,6 +40,12 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
         container,
         false
     ).also {
+
+        context?.appComponent?.run {
+            inject(this@NoteFragment)
+            inject(model)
+        }
+
         it.model = model
         it.lifecycleOwner = this
         subscribeToViewModel()

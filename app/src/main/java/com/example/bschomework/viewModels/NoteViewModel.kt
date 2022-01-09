@@ -3,7 +3,6 @@ package com.example.bschomework.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bschomework.arch.NoteInteractor
 import com.example.bschomework.arch.SingleLiveEvent
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.room.NotesRepository
@@ -11,6 +10,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
 class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
 
@@ -19,13 +19,29 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
 
     var id = 0L
 
-    val onSaveSuccessEvent = SingleLiveEvent<Unit>()
-    val onSaveNotSuccessEvent = SingleLiveEvent<Unit>()
-    val onShowMenuItemsEvent = SingleLiveEvent<Unit>()
-    val onHideMenuItemsEvent = SingleLiveEvent<Unit>()
-    val onShowProgressIndicatorEvent = SingleLiveEvent<Unit>()
-    val onHideProgressIndicatorEvent = SingleLiveEvent<Unit>()
-    val onFailProgressIndicatorEvent = SingleLiveEvent<Unit>()
+    @Inject
+    lateinit var onSaveSuccessEvent: SingleLiveEvent<Unit>
+
+    @Inject
+    lateinit var onSaveNotSuccessEvent: SingleLiveEvent<Unit>
+
+    @Inject
+    lateinit var onShowMenuItemsEvent: SingleLiveEvent<Unit>
+
+    @Inject
+    lateinit var onHideMenuItemsEvent: SingleLiveEvent<Unit>
+
+    @Inject
+    lateinit var onShowProgressIndicatorEvent: SingleLiveEvent<Unit>
+
+    @Inject
+    lateinit var onHideProgressIndicatorEvent: SingleLiveEvent<Unit>
+
+    @Inject
+    lateinit var onFailProgressIndicatorEvent: SingleLiveEvent<Unit>
+
+    @Inject
+    lateinit var callNoteData: Call<NoteData>
 
     constructor(repository: NotesRepository, id: Long) : this(repository) {
         this.id = id
@@ -72,7 +88,7 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
 
         onShowProgressIndicatorEvent.call()
 
-        NoteInteractor().getNote().enqueue(object : Callback<NoteData> {
+        callNoteData.clone().enqueue(object : Callback<NoteData> {
             override fun onResponse(call: Call<NoteData>, response: Response<NoteData>) {
 
                 onHideProgressIndicatorEvent.call()

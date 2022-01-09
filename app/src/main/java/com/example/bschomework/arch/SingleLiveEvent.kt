@@ -23,6 +23,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.inject.Inject
 
 /**
  * A lifecycle-aware observable that sends only new updates after subscription, used for events like
@@ -34,7 +35,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * <p>
  * Note that only one observer is going to be notified of changes.
  */
-class SingleLiveEvent<T> : MutableLiveData<T>() {
+class SingleLiveEvent<T> @Inject constructor() : MutableLiveData<T>() {
 
     private val mPending = AtomicBoolean(false)
 
@@ -42,7 +43,7 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
     override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
 
         if (hasActiveObservers()) {
-            Log.d(TAG,"Multiple observers registered but only one will be notified of changes.")
+            Log.d(TAG, "Multiple observers registered but only one will be notified of changes.")
         }
 
         // Observe the internal MutableLiveData
