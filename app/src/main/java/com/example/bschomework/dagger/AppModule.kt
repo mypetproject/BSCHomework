@@ -12,7 +12,6 @@ import javax.inject.Singleton
 @Module
 class AppModule {
 
-    //TODO Приемлемо или лучше создавать бд в NotesDatabase?
     @Provides
     @Singleton
     fun provideNotesDatabase(context: Context): NotesDatabase = Room.databaseBuilder(

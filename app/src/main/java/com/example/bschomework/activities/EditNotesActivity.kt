@@ -24,7 +24,6 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private lateinit var binding: ActivityEditNotesBinding
 
-    //TODO Как заинжектить адаптер без dependency cycle и стоит ли
     private val adapter by lazy { NotesListViewPagerAdapter(this) }
 
     @Inject

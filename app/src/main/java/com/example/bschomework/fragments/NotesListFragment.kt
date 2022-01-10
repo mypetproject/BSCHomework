@@ -1,5 +1,6 @@
 package com.example.bschomework.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,8 +22,10 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
     @Inject
     lateinit var model: NotesListViewModel
 
-    @Inject
-    lateinit var adapter: NotesListAdapter
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        context.appComponent.inject(this@NotesListFragment)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,16 +34,10 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
     ): View =
         FragmentNotesListBinding.inflate(inflater, container, false).apply {
 
-            //TODO Строку ниже лучше выполнять здесь или в onAttach?
-            context?.appComponent?.inject(this@NotesListFragment)
-
             model.notes.observe(this@NotesListFragment, { notes ->
                 notesRecyclerview.adapter =
-                    adapter.also {
-                        it.notes = notes
-                        it.setOnItemClickListener { noteData: NoteData ->
-                            notesListItemClicked(noteData)
-                        }
+                    NotesListAdapter(notes) { noteData: NoteData ->
+                        notesListItemClicked(noteData)
                     }
             })
         }.root

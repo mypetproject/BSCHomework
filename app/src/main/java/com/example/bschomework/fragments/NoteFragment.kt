@@ -1,5 +1,6 @@
 package com.example.bschomework.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,6 +31,15 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
 
     private lateinit var binding: FragmentNoteBinding
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        context.appComponent.run {
+            inject(this@NoteFragment)
+            inject(model)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,12 +50,6 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
         container,
         false
     ).also {
-
-        context?.appComponent?.run {
-            inject(this@NoteFragment)
-            inject(model)
-        }
-
         it.model = model
         it.lifecycleOwner = this
         subscribeToViewModel()

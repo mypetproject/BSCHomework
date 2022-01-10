@@ -3,6 +3,7 @@ package com.example.bschomework.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bschomework.arch.NoteApi
 import com.example.bschomework.arch.SingleLiveEvent
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.room.NotesRepository
@@ -88,7 +89,7 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
 
         onShowProgressIndicatorEvent.call()
 
-        callNoteData.clone().enqueue(object : Callback<NoteData> {
+        noteApi.getNote().enqueue(object : Callback<NoteData> {
             override fun onResponse(call: Call<NoteData>, response: Response<NoteData>) {
 
                 onHideProgressIndicatorEvent.call()
