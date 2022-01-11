@@ -3,19 +3,25 @@ package com.example.bschomework.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.bschomework.room.NotesRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-class NoteViewModelFactory(private val repository: NotesRepository) :
+class NoteViewModelFactory @AssistedInject constructor(
+    private val repository: NotesRepository,
+    @Assisted("noteId") val id: Long
+) :
     ViewModelProvider.NewInstanceFactory() {
 
-    private var id = -1L
-
-    constructor(repository: NotesRepository, id : Long) : this(repository) {
-        this.id = id
-    }
-
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
         return if (id >= 0) NoteViewModel(repository, id) as T
         else NoteViewModel(repository) as T
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(@Assisted("noteId") id: Long): NoteViewModelFactory
     }
 }

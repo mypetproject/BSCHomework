@@ -1,14 +1,19 @@
-package com.example.bschomework.arch
+package com.example.bschomework.dagger
 
-import com.example.bschomework.room.NoteData
+import com.example.bschomework.arch.NoteApi
 import com.google.gson.GsonBuilder
-import retrofit2.Call
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class NoteInteractor {
+@Module
+class RetrofitModule {
 
-    fun getNote(): Call<NoteData> = Retrofit.Builder()
+    @Provides
+    @Reusable
+    fun provideNoteApi(): NoteApi = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(
             GsonConverterFactory.create(
@@ -17,7 +22,7 @@ class NoteInteractor {
                     .create()
             )
         )
-        .build().create(NoteApi::class.java).getNote()
+        .build().create(NoteApi::class.java)
 
     companion object {
         private const val BASE_URL =
