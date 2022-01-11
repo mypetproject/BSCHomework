@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.activities.EditNotesActivity
 import com.example.bschomework.activities.MainActivity
@@ -15,15 +14,12 @@ import com.example.bschomework.adapters.NotesListAdapter
 import com.example.bschomework.databinding.FragmentNotesListBinding
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.viewModels.NotesListViewModel
-import com.example.bschomework.viewModels.NotesListViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
-    private val model: NotesListViewModel by viewModels {
-        NotesListViewModelFactory(
-            (activity?.application as App).repository
-        )
-    }
+    private val model: NotesListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
