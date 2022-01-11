@@ -3,21 +3,21 @@ package com.example.bschomework.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bschomework.arch.NoteInteractor
+import com.example.bschomework.arch.NoteApi
 import com.example.bschomework.arch.SingleLiveEvent
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.room.NotesRepository
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
+class NoteViewModel(private val repository: NotesRepository) : ViewModel(), KoinComponent {
 
     val header: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
     val content: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
-
-    var id = 0L
 
     val onSaveSuccessEvent = SingleLiveEvent<Unit>()
     val onSaveNotSuccessEvent = SingleLiveEvent<Unit>()
@@ -27,12 +27,9 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
     val onHideProgressIndicatorEvent = SingleLiveEvent<Unit>()
     val onFailProgressIndicatorEvent = SingleLiveEvent<Unit>()
 
-    constructor(repository: NotesRepository, id: Long) : this(repository) {
-        this.id = id
-        setData()
-    }
+    private val noteApi: NoteApi by inject()
 
-    private fun setData() = viewModelScope.launch {
+    fun setData(id: Long) = viewModelScope.launch {
         repository.getNoteById(id).let {
             header.value = it?.header
             content.value = it?.content
@@ -47,7 +44,7 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
         }
     }
 
-    fun saveData() = viewModelScope.launch {
+    fun saveData(id: Long) = viewModelScope.launch {
         if (checkData()) {
 
             NoteData(header.value.toString(), content.value.toString()).let {
@@ -72,7 +69,7 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
 
         onShowProgressIndicatorEvent.call()
 
-        NoteInteractor().getNote().enqueue(object : Callback<NoteData> {
+        noteApi.getNote().enqueue(object : Callback<NoteData> {
             override fun onResponse(call: Call<NoteData>, response: Response<NoteData>) {
 
                 onHideProgressIndicatorEvent.call()
