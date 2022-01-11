@@ -18,38 +18,22 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
     val header: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
     val content: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
 
-    var id = 0L
+    val onSaveSuccessEvent = SingleLiveEvent<Unit>()
+    val onSaveNotSuccessEvent = SingleLiveEvent<Unit>()
+    val onShowMenuItemsEvent = SingleLiveEvent<Unit>()
+    val onHideMenuItemsEvent = SingleLiveEvent<Unit>()
+    val onShowProgressIndicatorEvent = SingleLiveEvent<Unit>()
+    val onHideProgressIndicatorEvent = SingleLiveEvent<Unit>()
+    val onFailProgressIndicatorEvent = SingleLiveEvent<Unit>()
 
     @Inject
-    lateinit var onSaveSuccessEvent: SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onSaveNotSuccessEvent: SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onShowMenuItemsEvent: SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onHideMenuItemsEvent: SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onShowProgressIndicatorEvent: SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onHideProgressIndicatorEvent: SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onFailProgressIndicatorEvent: SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var callNoteData: Call<NoteData>
+    lateinit var noteApi: NoteApi
 
     constructor(repository: NotesRepository, id: Long) : this(repository) {
-        this.id = id
-        setData()
+        setData(id)
     }
 
-    private fun setData() = viewModelScope.launch {
+    private fun setData(id: Long) = viewModelScope.launch {
         repository.getNoteById(id).let {
             header.value = it?.header
             content.value = it?.content
@@ -64,7 +48,7 @@ class NoteViewModel(private val repository: NotesRepository) : ViewModel() {
         }
     }
 
-    fun saveData() = viewModelScope.launch {
+    fun saveData(id : Long) = viewModelScope.launch {
         if (checkData()) {
 
             NoteData(header.value.toString(), content.value.toString()).let {

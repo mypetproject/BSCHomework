@@ -119,7 +119,7 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
     }
 
     override fun save() {
-        model.saveData()
+        model.saveData(arguments?.getLong(NOTE_ID) ?: -1L)
     }
 
     override fun getTextForShare(): String = model.run {
