@@ -1,13 +1,11 @@
 package com.example.bschomework.hilt
 
 import com.example.bschomework.arch.NoteApi
-import com.example.bschomework.room.NoteData
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -15,9 +13,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 class RetrofitModule {
 
-    //TODO Приемлемо ли добавлять инициализацию бд и ретрофит в модуль или лучше использовать NotesDatabase и NoteInteractor?
     @Provides
-    fun provideCallNoteData(): Call<NoteData> = Retrofit.Builder()
+    fun provideCallNoteData(): NoteApi = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(
             GsonConverterFactory.create(
@@ -26,7 +23,7 @@ class RetrofitModule {
                     .create()
             )
         )
-        .build().create(NoteApi::class.java).getNote()
+        .build().create(NoteApi::class.java)
 
     companion object {
 

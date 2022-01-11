@@ -5,10 +5,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.bschomework.fragments.NoteFragment
 import com.example.bschomework.room.NoteData
-import javax.inject.Inject
 
-
-class NotesListViewPagerAdapter @Inject constructor(fragmentActivity: FragmentActivity) :
+class NotesListViewPagerAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
 
     var items: List<NoteData> = emptyList()

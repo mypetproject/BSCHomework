@@ -15,15 +15,11 @@ import com.example.bschomework.databinding.FragmentNotesListBinding
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.viewModels.NotesListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
     private val model: NotesListViewModel by viewModels()
-
-    @Inject
-    lateinit var adapter: NotesListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,11 +29,8 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
         FragmentNotesListBinding.inflate(inflater, container, false).apply {
             model.notes.observe(this@NotesListFragment, { notes ->
                 notesRecyclerview.adapter =
-                    adapter.also {
-                        it.notes = notes
-                        it.setOnItemClickListener { noteData: NoteData ->
-                            notesListItemClicked(noteData)
-                        }
+                    NotesListAdapter(notes) { noteData: NoteData ->
+                        notesListItemClicked(noteData)
                     }
             })
         }.root

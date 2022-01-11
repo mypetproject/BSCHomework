@@ -3,6 +3,7 @@ package com.example.bschomework.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bschomework.arch.NoteApi
 import com.example.bschomework.arch.SingleLiveEvent
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.room.NotesRepository
@@ -19,39 +20,21 @@ class NoteViewModel @Inject constructor(private val repository: NotesRepository)
     val header: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
     val content: MutableLiveData<String> by lazy { MutableLiveData<String>("") }
 
-    var id = 0L
+    val onSaveSuccessEvent = SingleLiveEvent<Unit>()
+    val onSaveNotSuccessEvent = SingleLiveEvent<Unit>()
+    val onShowMenuItemsEvent = SingleLiveEvent<Unit>()
+    val onHideMenuItemsEvent = SingleLiveEvent<Unit>()
+    val onShowProgressIndicatorEvent = SingleLiveEvent<Unit>()
+    val onHideProgressIndicatorEvent = SingleLiveEvent<Unit>()
+    val onFailProgressIndicatorEvent = SingleLiveEvent<Unit>()
 
     @Inject
-    lateinit var onSaveSuccessEvent : SingleLiveEvent<Unit>
+    lateinit var noteApi: NoteApi
 
-    @Inject
-    lateinit var onSaveNotSuccessEvent : SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onShowMenuItemsEvent : SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onHideMenuItemsEvent : SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onShowProgressIndicatorEvent : SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onHideProgressIndicatorEvent : SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var onFailProgressIndicatorEvent : SingleLiveEvent<Unit>
-
-    @Inject
-    lateinit var callNoteData: Call<NoteData>
-
-    fun setData(id: Long) {
-        this.id = id
-        viewModelScope.launch {
-            repository.getNoteById(id).let {
-                header.value = it?.header
-                content.value = it?.content
-            }
+    fun setData(id: Long) = viewModelScope.launch {
+        repository.getNoteById(id).let {
+            header.value = it?.header
+            content.value = it?.content
         }
     }
 
@@ -63,7 +46,7 @@ class NoteViewModel @Inject constructor(private val repository: NotesRepository)
         }
     }
 
-    fun saveData() = viewModelScope.launch {
+    fun saveData(id: Long) = viewModelScope.launch {
         if (checkData()) {
 
             NoteData(header.value.toString(), content.value.toString()).let {
@@ -88,7 +71,7 @@ class NoteViewModel @Inject constructor(private val repository: NotesRepository)
 
         onShowProgressIndicatorEvent.call()
 
-        callNoteData.clone().enqueue(object : Callback<NoteData> {
+        noteApi.getNote().enqueue(object : Callback<NoteData> {
             override fun onResponse(call: Call<NoteData>, response: Response<NoteData>) {
 
                 onHideProgressIndicatorEvent.call()

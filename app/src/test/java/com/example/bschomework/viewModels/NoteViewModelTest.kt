@@ -70,17 +70,11 @@ class NoteViewModelTest {
     }
 
     @Test
-    fun checkId() {
-        assertTrue(modelForInsertItem.id == 0L)
-        assertTrue(modelForEditItem.id > 0L)
-    }
-
-    @Test
     fun insertData() = runBlocking {
 
         modelForInsertItem.header.value = "header"
         modelForInsertItem.content.value = "note"
-        modelForInsertItem.saveData()
+        modelForInsertItem.saveData(-1L)
 
         var successSaved = false
         modelForInsertItem.onSaveSuccessEvent.observeForever {
@@ -98,7 +92,7 @@ class NoteViewModelTest {
 
         modelForEditItem.header.value = "edited_header"
         modelForEditItem.content.value = "edited_note"
-        modelForEditItem.saveData()
+        modelForEditItem.saveData(1L)
 
 
         var successSaved = false
@@ -117,7 +111,7 @@ class NoteViewModelTest {
 
         modelForInsertItem.header.value = ""
         modelForInsertItem.content.value = ""
-        modelForInsertItem.saveData()
+        modelForInsertItem.saveData(-1L)
 
         var successSaved = false
         modelForInsertItem.onSaveSuccessEvent.observeForever {

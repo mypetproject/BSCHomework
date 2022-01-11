@@ -15,7 +15,6 @@ import com.example.bschomework.fragments.SaveAlertDialogFragment
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.viewModels.NotesListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
@@ -24,8 +23,7 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private lateinit var binding: ActivityEditNotesBinding
 
-    @Inject
-    lateinit var adapter: NotesListViewPagerAdapter
+    private val adapter by lazy { NotesListViewPagerAdapter(this) }
 
     private val model: NotesListViewModel by viewModels()
 

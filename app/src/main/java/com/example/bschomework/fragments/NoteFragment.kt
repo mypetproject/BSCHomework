@@ -34,7 +34,6 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
         false
     ).also {
 
-        //TODO Как правильно передать id в NoteViewModel?
         arguments?.run {
             model.setData(getLong(NOTE_ID))
         }
@@ -108,7 +107,7 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
     }
 
     override fun save() {
-        model.saveData()
+        model.saveData(arguments?.getLong(NOTE_ID) ?: -1L)
     }
 
     override fun getTextForShare(): String = model.run {
