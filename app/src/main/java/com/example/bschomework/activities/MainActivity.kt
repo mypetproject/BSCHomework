@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import com.example.bschomework.R
 import com.example.bschomework.databinding.ActivityMainBinding
 import com.example.bschomework.fragments.NoteFragment
+import com.example.bschomework.fragments.NotesListFragment
 import com.example.bschomework.fragments.SaveAlertDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,7 +31,37 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         menuInflater.inflate(R.menu.activity_main_options_menu, menu)
         this.menu = menu
 
+        setSearchViewListener(menu)
+
         return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setSearchViewListener(menu: Menu) {
+        menu.findItem(R.id.search_menu_item).run {
+
+            (actionView as SearchView).setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    (supportFragmentManager.findFragmentById(R.id.fragment_container) as NotesListFragment)
+                        .filter(newText as String)
+                    return false
+                }
+            })
+
+            setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+                override fun onMenuItemActionExpand(p0: MenuItem?): Boolean {
+                    return true
+                }
+
+                override fun onMenuItemActionCollapse(p0: MenuItem?): Boolean {
+                    invalidateOptionsMenu()
+                    return true
+                }
+            })
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -40,11 +72,18 @@ class MainActivity : AppCompatActivity(), MainActivityView {
                 true
             }
             R.id.add_menu_item -> {
+                hideAddMenuItem()
+                hideSearchMenuItem()
                 addMenuItemClicked()
                 true
             }
             R.id.about_menu_item -> {
                 aboutMenuItemClicked()
+                true
+            }
+            R.id.search_menu_item -> {
+                hideAddMenuItem()
+                hideSearchMenuItem()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -71,12 +110,12 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         startActivity(Intent(this, AboutActivity::class.java))
     }
 
-    override fun hideAddMenuItem() {
+    private fun hideAddMenuItem() {
         menu?.findItem(R.id.add_menu_item)?.isVisible = false
     }
 
-    override fun showAddMenuItem() {
-        menu?.findItem(R.id.add_menu_item)?.isVisible = true
+    private fun hideSearchMenuItem() {
+        menu?.findItem(R.id.search_menu_item)?.isVisible = false
     }
 
     override fun hideSaveMenuItem() {

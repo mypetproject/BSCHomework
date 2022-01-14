@@ -21,12 +21,15 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
     private val model: NotesListViewModel by viewModels()
 
+    private lateinit var binding: FragmentNotesListBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View =
         FragmentNotesListBinding.inflate(inflater, container, false).apply {
+            binding = this
             model.notes.observe(this@NotesListFragment, { notes ->
                 notesRecyclerview.adapter =
                     NotesListAdapter(notes) { noteData: NoteData ->
@@ -38,10 +41,7 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
     override fun onResume() {
         super.onResume()
 
-        (activity as MainActivity).run {
-            showAddMenuItem()
-            hideSaveMenuItem()
-        }
+        (activity as MainActivity).invalidateOptionsMenu()
     }
 
     private fun notesListItemClicked(noteData: NoteData) {
@@ -49,5 +49,12 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
             Intent(this.context, EditNotesActivity::class.java)
                 .putExtra(EditNotesActivity.EXTRA_LONG, noteData.id)
         )
+    }
+
+    fun filter(newText: String) {
+        (binding.notesRecyclerview.adapter as NotesListAdapter).run {
+            filter(newText, model.notes.value)
+            notifyDataSetChanged()
+        }
     }
 }

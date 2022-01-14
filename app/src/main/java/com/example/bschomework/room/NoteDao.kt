@@ -16,5 +16,8 @@ interface NoteDao {
     suspend fun getNoteById(id: Long): NoteData?
 
     @Query("SELECT * FROM notes")
-    fun getAllNotes(): LiveData<List<NoteData>>
+    fun getAllNotesLiveData(): LiveData<List<NoteData>>
+
+    @Query("SELECT * FROM notes")
+    suspend fun getAllNotes(): List<NoteData>
 }

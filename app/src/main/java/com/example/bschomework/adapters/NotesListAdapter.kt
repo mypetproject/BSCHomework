@@ -9,9 +9,9 @@ import com.example.bschomework.databinding.NotesListItemBinding
 import com.example.bschomework.room.NoteData
 
 class NotesListAdapter(
-    private val notes: List<NoteData>,
+    private var notes: List<NoteData>,
     private val onItemClick: ((NoteData) -> Unit)
-) : RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>() {
+) : RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>(), QueryFilter<NoteData> {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         NotesListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false).also {
@@ -40,5 +40,9 @@ class NotesListAdapter(
             return if (note.header.isNotEmpty()) "${context.getString(R.string.note_titled)} ${note.header}"
             else context.getString(R.string.untitled_note)
         }
+    }
+
+    override fun filter(query: String, list: List<NoteData>?) {
+        notes = list?.filter { it.header.contains(query) }.orEmpty()
     }
 }

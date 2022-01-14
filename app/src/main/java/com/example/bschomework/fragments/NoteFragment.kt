@@ -41,7 +41,6 @@ class NoteFragment : Fragment(R.layout.fragment_note), NoteFragmentView {
         it.model = model
         it.lifecycleOwner = this
         subscribeToViewModel()
-        if (activity is MainActivity) (activity as MainActivity).hideAddMenuItem()
         binding = it
     }.root
 
