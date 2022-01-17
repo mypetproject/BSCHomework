@@ -19,7 +19,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
@@ -34,8 +33,7 @@ class NoteViewModelTest {
     @JvmField
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var modelForInsertItem: NoteViewModel
-    private lateinit var modelForEditItem: NoteViewModel
+    private lateinit var model: NoteViewModel
     private lateinit var noteData: NoteData
     private lateinit var repository: NotesRepository
     private lateinit var noteDao: NoteDao
@@ -57,8 +55,7 @@ class NoteViewModelTest {
 
         repository = NotesRepository(noteDao)
 
-        modelForInsertItem = NoteViewModel(repository)
-        modelForEditItem = NoteViewModel(repository,1L)
+        model = NoteViewModel(repository)
     }
 
     @ExperimentalCoroutinesApi
@@ -72,17 +69,16 @@ class NoteViewModelTest {
     @Test
     fun insertData() = runBlocking {
 
-        modelForInsertItem.header.value = "header"
-        modelForInsertItem.content.value = "note"
-        modelForInsertItem.saveData(-1L)
+        model.header.value = "header"
+        model.content.value = "note"
+        model.saveData(-1L)
 
         var successSaved = false
-        modelForInsertItem.onSaveSuccessEvent.observeForever {
+        model.onSaveSuccessEvent.observeForever {
             successSaved = true
         }
 
         verify(noteDao).insert(any())
-        verify(noteDao).getNoteById(anyLong())
 
         assertTrue(successSaved)
     }
@@ -90,18 +86,17 @@ class NoteViewModelTest {
     @Test
     fun updateData() = runBlocking {
 
-        modelForEditItem.header.value = "edited_header"
-        modelForEditItem.content.value = "edited_note"
-        modelForEditItem.saveData(1L)
+        model.header.value = "edited_header"
+        model.content.value = "edited_note"
+        model.saveData(1L)
 
 
         var successSaved = false
-        modelForEditItem.onSaveSuccessEvent.observeForever {
+        model.onSaveSuccessEvent.observeForever {
             successSaved = true
         }
 
         verify(noteDao).update(any())
-        verify(noteDao).getNoteById(anyLong())
 
         assertTrue(successSaved)
     }
@@ -109,34 +104,32 @@ class NoteViewModelTest {
     @Test
     fun tryToSaveEmptyData() = runBlocking {
 
-        modelForInsertItem.header.value = ""
-        modelForInsertItem.content.value = ""
-        modelForInsertItem.saveData(-1L)
+        model.header.value = ""
+        model.content.value = ""
+        model.saveData(-1L)
 
         var successSaved = false
-        modelForInsertItem.onSaveSuccessEvent.observeForever {
+        model.onSaveSuccessEvent.observeForever {
             successSaved = true
         }
         assertFalse(successSaved)
 
         var failSaving = false
-        modelForInsertItem.onSaveNotSuccessEvent.observeForever {
+        model.onSaveNotSuccessEvent.observeForever {
             failSaving = true
         }
-
-        verify(noteDao).getNoteById(anyLong())
 
         assertTrue(failSaving)
     }
 
     @Test
     fun setMenuItemVisibility() {
-        modelForInsertItem.header.value = "header"
-        modelForInsertItem.content.value = "note"
-        modelForInsertItem.setMenuItemsVisibility()
+        model.header.value = "header"
+        model.content.value = "note"
+        model.setMenuItemsVisibility()
 
         var successSaved = false
-        modelForInsertItem.onShowMenuItemsEvent.observeForever {
+        model.onShowMenuItemsEvent.observeForever {
             successSaved = true
         }
         assertTrue(successSaved)
@@ -144,18 +137,18 @@ class NoteViewModelTest {
 
     @Test
     fun setMenuItemVisibilityEmptyHeader() {
-        modelForInsertItem.header.value = ""
-        modelForInsertItem.content.value = "note"
-        modelForInsertItem.setMenuItemsVisibility()
+        model.header.value = ""
+        model.content.value = "note"
+        model.setMenuItemsVisibility()
 
         var successShowMenuItems = false
-        modelForInsertItem.onShowMenuItemsEvent.observeForever {
+        model.onShowMenuItemsEvent.observeForever {
             successShowMenuItems = true
         }
         assertFalse(successShowMenuItems)
 
         var failShowMenuItems = false
-        modelForInsertItem.onHideMenuItemsEvent.observeForever {
+        model.onHideMenuItemsEvent.observeForever {
             failShowMenuItems = true
         }
         assertTrue(failShowMenuItems)
@@ -163,18 +156,18 @@ class NoteViewModelTest {
 
     @Test
     fun setMenuItemVisibilityEmptyNote() {
-        modelForInsertItem.header.value = "header"
-        modelForInsertItem.content.value = ""
-        modelForInsertItem.setMenuItemsVisibility()
+        model.header.value = "header"
+        model.content.value = ""
+        model.setMenuItemsVisibility()
 
         var successShowMenuItems = false
-        modelForInsertItem.onShowMenuItemsEvent.observeForever {
+        model.onShowMenuItemsEvent.observeForever {
             successShowMenuItems = true
         }
         assertFalse(successShowMenuItems)
 
         var failShowMenuItems = false
-        modelForInsertItem.onHideMenuItemsEvent.observeForever {
+        model.onHideMenuItemsEvent.observeForever {
             failShowMenuItems = true
         }
         assertTrue(failShowMenuItems)

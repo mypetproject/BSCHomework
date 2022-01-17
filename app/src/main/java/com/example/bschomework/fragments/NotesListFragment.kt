@@ -23,18 +23,27 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
     private lateinit var binding: FragmentNotesListBinding
 
+    private val adapter by lazy {
+        NotesListAdapter(emptyList()) { noteData: NoteData ->
+            notesListItemClicked(noteData)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View =
         FragmentNotesListBinding.inflate(inflater, container, false).apply {
+
             binding = this
+            notesRecyclerview.adapter = adapter
+
             model.notes.observe(this@NotesListFragment, { notes ->
-                notesRecyclerview.adapter =
-                    NotesListAdapter(notes) { noteData: NoteData ->
-                        notesListItemClicked(noteData)
-                    }
+                adapter.run {
+                    setNotes(notes)
+                    notifyDataSetChanged()
+                }
             })
         }.root
 
@@ -52,8 +61,8 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
     }
 
     fun filter(newText: String) {
-        (binding.notesRecyclerview.adapter as NotesListAdapter).run {
-            filter(newText, model.notes.value)
+        adapter.run {
+            setNotes(model.filter(newText))
             notifyDataSetChanged()
         }
     }
