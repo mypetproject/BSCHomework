@@ -27,4 +27,14 @@
     <string name="download_note">Загрузить заметку</string>
     <string name="downloaded">Загружено</string>
     <string name="download_failed">Загрузка не удалась</string>
+    <string name="search">Поиск</string>
+    <string name="search_button">Кнопка поиска</string>
+
+    <plurals name="notes_saved">
+        <item quantity="one">Cохранена %d заметка</item>
+        <item quantity="two">Cохранено %d заметки </item>
+        <item quantity="few">Cохранено %d заметки</item>
+        <item quantity="many">Cохранено %d заметок</item>
+        <item quantity="other">Cохранено %d заметок</item>
+    </plurals>
 </resources>

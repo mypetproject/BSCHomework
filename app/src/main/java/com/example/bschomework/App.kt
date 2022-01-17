@@ -1,11 +1,30 @@
 package com.example.bschomework
 
 import android.app.Application
-import com.example.bschomework.room.NotesDatabase
-import com.example.bschomework.room.NotesRepository
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
-class App : Application() {
+@HiltAndroidApp
+class App : Application(), Configuration.Provider {
 
-    private val database by lazy { NotesDatabase.getDatabase(this) }
-    val repository by lazy { NotesRepository(database.noteDao()) }
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    @Inject
+    lateinit var backupWorkRequest: WorkRequest
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
+
+    override fun onCreate() {
+        super.onCreate()
+
+        WorkManager.getInstance(this).enqueue(backupWorkRequest)
+    }
 }

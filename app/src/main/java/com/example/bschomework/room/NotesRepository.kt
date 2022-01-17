@@ -1,10 +1,13 @@
 package com.example.bschomework.room
 
 import androidx.lifecycle.LiveData
+import javax.inject.Inject
 
-open class NotesRepository(private val dao: NoteDao) {
+open class NotesRepository @Inject constructor(private val dao: NoteDao) {
 
-    val allNotes: LiveData<List<NoteData>> by lazy { dao.getAllNotes() }
+    val allNotes: LiveData<List<NoteData>> by lazy { dao.getAllNotesLiveData() }
+
+    suspend fun allNotesSize(): Int = dao.getAllNotes().size
 
     suspend fun insert(noteData: NoteData) {
         dao.insert(noteData)

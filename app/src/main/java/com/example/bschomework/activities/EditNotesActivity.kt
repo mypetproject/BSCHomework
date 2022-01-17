@@ -7,8 +7,6 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
-import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.adapters.NotesListViewPagerAdapter
 import com.example.bschomework.databinding.ActivityEditNotesBinding
@@ -16,9 +14,9 @@ import com.example.bschomework.fragments.NoteFragment
 import com.example.bschomework.fragments.SaveAlertDialogFragment
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.viewModels.NotesListViewModel
-import com.example.bschomework.viewModels.NotesListViewModelFactory
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private var menu: Menu? = null
@@ -27,11 +25,7 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
 
     private val adapter by lazy { NotesListViewPagerAdapter(this) }
 
-    private val model: NotesListViewModel by viewModels {
-        NotesListViewModelFactory(
-            (application as App).repository
-        )
-    }
+    private val model: NotesListViewModel by viewModels()
 
     private var setCurrentPagerPosition = true
 
@@ -69,13 +63,9 @@ class EditNotesActivity : AppCompatActivity(), EditNotesActivityView {
         model.fragments = adapter.fragments
     }
 
-    private fun setPagerCurrentItem(notes: List<NoteData>) = lifecycleScope.launch {
+    private fun setPagerCurrentItem(notes: List<NoteData>) {
         binding.pager.setCurrentItem(
-            notes.indexOf(
-                model.getNoteById(
-                    intent.getLongExtra(EXTRA_LONG, 0L)
-                )
-            ), false
+            notes.indexOfFirst { it.id == intent.getLongExtra(EXTRA_LONG, 0L) }, false
         )
         setCurrentPagerPosition = false
     }

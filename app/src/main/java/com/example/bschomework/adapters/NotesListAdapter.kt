@@ -9,9 +9,13 @@ import com.example.bschomework.databinding.NotesListItemBinding
 import com.example.bschomework.room.NoteData
 
 class NotesListAdapter(
-    private val notes: List<NoteData>,
+    private var notes: List<NoteData>,
     private val onItemClick: ((NoteData) -> Unit)
 ) : RecyclerView.Adapter<NotesListAdapter.NoteViewHolder>() {
+
+    fun setNotes(notes: List<NoteData>) {
+        this.notes = notes
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         NotesListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false).also {

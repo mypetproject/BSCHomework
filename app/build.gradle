@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -47,6 +48,11 @@ android {
 }
 
 dependencies {
+    def work_version = "2.7.1"
+    def room_version = "2.4.0"
+    def retrofit_version = "2.9.0"
+    def hilt_version = "2.40.5"
+    def androidx_hilt_version = "1.0.0"
 
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'androidx.fragment:fragment-ktx:1.4.0'
@@ -61,15 +67,22 @@ dependencies {
     testImplementation 'org.mockito.kotlin:mockito-kotlin:4.0.0'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0-RC3'
 
-    implementation 'androidx.room:room-runtime:2.4.0'
-    implementation 'androidx.room:room-ktx:2.4.0'
-    kapt 'androidx.room:room-compiler:2.4.0'
-    annotationProcessor 'androidx.room:room-compiler:2.4.0'
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
 
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation "androidx.hilt:hilt-work:$androidx_hilt_version"
+    kapt "androidx.hilt:hilt-compiler:$androidx_hilt_version"
+
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 }

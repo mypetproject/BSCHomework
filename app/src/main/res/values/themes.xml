@@ -19,6 +19,8 @@
         <item name="colorNotesListHolderUnselected">@color/holder_notes_list_background_unselected
         </item>
 
+        <item name="android:editTextColor">?attr/colorOnPrimary</item>
+
     </style>
 
     <style name="Theme.BSCHomework.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">

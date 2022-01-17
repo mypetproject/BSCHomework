@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.bschomework.App
 import com.example.bschomework.R
 import com.example.bschomework.activities.EditNotesActivity
 import com.example.bschomework.activities.MainActivity
@@ -15,14 +14,19 @@ import com.example.bschomework.adapters.NotesListAdapter
 import com.example.bschomework.databinding.FragmentNotesListBinding
 import com.example.bschomework.room.NoteData
 import com.example.bschomework.viewModels.NotesListViewModel
-import com.example.bschomework.viewModels.NotesListViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
 
-    private val model: NotesListViewModel by viewModels {
-        NotesListViewModelFactory(
-            (activity?.application as App).repository
-        )
+    private val model: NotesListViewModel by viewModels()
+
+    private lateinit var binding: FragmentNotesListBinding
+
+    private val adapter by lazy {
+        NotesListAdapter(emptyList()) { noteData: NoteData ->
+            notesListItemClicked(noteData)
+        }
     }
 
     override fun onCreateView(
@@ -31,21 +35,22 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
         savedInstanceState: Bundle?
     ): View =
         FragmentNotesListBinding.inflate(inflater, container, false).apply {
+
+            binding = this
+            notesRecyclerview.adapter = adapter
+
             model.notes.observe(this@NotesListFragment, { notes ->
-                notesRecyclerview.adapter =
-                    NotesListAdapter(notes) { noteData: NoteData ->
-                        notesListItemClicked(noteData)
-                    }
+                adapter.run {
+                    setNotes(notes)
+                    notifyDataSetChanged()
+                }
             })
         }.root
 
     override fun onResume() {
         super.onResume()
 
-        (activity as MainActivity).run {
-            showAddMenuItem()
-            hideSaveMenuItem()
-        }
+        (activity as MainActivity).invalidateOptionsMenu()
     }
 
     private fun notesListItemClicked(noteData: NoteData) {
@@ -53,5 +58,12 @@ class NotesListFragment : Fragment(R.layout.fragment_notes_list) {
             Intent(this.context, EditNotesActivity::class.java)
                 .putExtra(EditNotesActivity.EXTRA_LONG, noteData.id)
         )
+    }
+
+    fun filter(newText: String) {
+        adapter.run {
+            setNotes(model.filter(newText))
+            notifyDataSetChanged()
+        }
     }
 }
