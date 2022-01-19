@@ -8,7 +8,6 @@
     <string name="input_text">Введите текст</string>
     <string name="share">Поделиться</string>
     <string name="about">О приложении</string>
-    <string name="lorem_ipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="about_activity_label">О приложении</string>
     <string name="add">Добавить</string>
     <string name="edit_note">Изменить запись</string>
@@ -23,12 +22,19 @@
     <string name="add_button">Кнопка добавить</string>
     <string name="about_the_app_button">Кнопка о приложении</string>
     <string name="share_note_button">Кнопка поделиться заметкой</string>
+    <string name="get_location_button">Кнопка получить координаты</string>
 
     <string name="download_note">Загрузить заметку</string>
     <string name="downloaded">Загружено</string>
     <string name="download_failed">Загрузка не удалась</string>
     <string name="search">Поиск</string>
     <string name="search_button">Кнопка поиска</string>
+    <string name="get_location">Получить координаты</string>
+    <string name="location">Координаты:\n%f, %f</string>
+    <string name="open_site">Открыть сайт</string>
+    <string name="open_site_button">Кнопка открытия сайта</string>
+    <string name="webview_demo" translatable="false">WebView Demo</string>
+    <string name="html_text" translatable="false"><![CDATA[<h2>Lorem ipsum</h2><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>]]></string>
 
     <plurals name="notes_saved">
         <item quantity="one">Cохранена %d заметка</item>

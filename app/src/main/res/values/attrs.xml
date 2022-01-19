@@ -5,4 +5,8 @@
     <attr name="colorNotesListHolderSelected" format="color" />
     <attr name="colorNotesListHolderUnselected" format="color" />
 
+    <declare-styleable name="CustomTextView">
+        <attr name="htmlText" format="string" />
+    </declare-styleable>
+
 </resources>

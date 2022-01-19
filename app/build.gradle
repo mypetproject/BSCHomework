@@ -85,4 +85,6 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$androidx_hilt_version"
 
     implementation "androidx.work:work-runtime-ktx:$work_version"
+
+    implementation "com.google.android.gms:play-services-location:19.0.1"
 }
