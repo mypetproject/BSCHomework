@@ -26,6 +26,20 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/location_menu_item"
+        android:contentDescription="@string/get_location_button"
+        android:icon="@drawable/ic_baseline_location_on_24"
+        android:title="@string/get_location"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/web_menu_item"
+        android:contentDescription="@string/open_site_button"
+        android:icon="@drawable/ic_baseline_web_24"
+        android:title="@string/open_site"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/about_menu_item"
         android:icon="@drawable/ic_baseline_info_24"
         android:title="@string/about"

@@ -4,6 +4,8 @@
     package="com.example.bschomework">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".App"
@@ -36,6 +38,8 @@
             android:label="@string/about_activity_label" />
 
         <activity android:name=".activities.EditNotesActivity" />
+
+        <activity android:name=".activities.WebViewActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

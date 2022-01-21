@@ -13,4 +13,5 @@
     <dimen name="TIET_text_size">20sp</dimen>
     <dimen name="TextView_text_size">16sp</dimen>
     <dimen name="track_thickness">20sp</dimen>
+    <dimen name="location_bottom_margin">5dp</dimen>
 </resources>

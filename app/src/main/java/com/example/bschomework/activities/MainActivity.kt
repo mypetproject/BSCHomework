@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
             R.id.add_menu_item -> {
                 hideAddMenuItem()
                 hideSearchMenuItem()
+                hideLocationMenuItem()
                 addMenuItemClicked()
                 true
             }
@@ -86,8 +87,20 @@ class MainActivity : AppCompatActivity(), MainActivityView {
                 hideSearchMenuItem()
                 true
             }
+            R.id.location_menu_item -> {
+                locationMenuItemClicked()
+                true
+            }
+            R.id.web_menu_item -> {
+                webMenuItemClicked()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun locationMenuItemClicked() {
+        (supportFragmentManager.findFragmentById(R.id.fragment_container) as NotesListFragment).getLocation()
     }
 
     private fun saveMenuButtonClicked() {
@@ -110,12 +123,20 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         startActivity(Intent(this, AboutActivity::class.java))
     }
 
+    private fun webMenuItemClicked() {
+        startActivity(Intent(this, WebViewActivity::class.java))
+    }
+
     private fun hideAddMenuItem() {
         menu?.findItem(R.id.add_menu_item)?.isVisible = false
     }
 
     private fun hideSearchMenuItem() {
         menu?.findItem(R.id.search_menu_item)?.isVisible = false
+    }
+
+    private fun hideLocationMenuItem() {
+        menu?.findItem(R.id.location_menu_item)?.isVisible = false
     }
 
     override fun hideSaveMenuItem() {
