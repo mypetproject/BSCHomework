@@ -22,13 +22,8 @@ class WebViewActivity : AppCompatActivity() {
 
                 webview.run {
                     webViewClient = WebViewClient()
-                    settings.javaScriptEnabled = true
-                    loadUrl(URL)
+                    loadData(getString(R.string.html_example), "text/html", "UTF-8")
                 }
             }
-    }
-
-    companion object {
-        private const val URL = "https://en.wikipedia.org/wiki/Main_Page"
     }
 }

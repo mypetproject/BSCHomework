@@ -27,37 +27,44 @@ class AboutActivity : AppCompatActivity() {
                     toolbar.setNavigationOnClickListener {
                         onBackPressed()
                     }
-                }
 
-        animate()
+                    animate(customTextview, mainLayout)
+                }
     }
 
-    private fun animate() {
+    private fun animate(customTextView: View, mainLayout: View) {
 
         val rotateTextAnimation = ObjectAnimator.ofFloat(
-            binding.customTextview,
-            View.ROTATION, 0f, 3600f
+            customTextView,
+            View.ROTATION, ROTATION_FROM, ROTATION_TO
         ).apply {
             interpolator = AccelerateDecelerateInterpolator()
-            repeatCount = 1
+            repeatCount = REPEAT_COUNT
             repeatMode = REVERSE
         }
 
         val backgroundColorAnimation = ObjectAnimator.ofObject(
-            binding.mainLayout,
+            mainLayout,
             "backgroundColor",
             ArgbEvaluator(),
             ContextCompat.getColor(this@AboutActivity, R.color.white),
             ContextCompat.getColor(this@AboutActivity, R.color.purple_200)
         ).apply {
-            repeatCount = 1
+            repeatCount = REPEAT_COUNT
             repeatMode = REVERSE
         }
 
         AnimatorSet().run {
             play(rotateTextAnimation).with(backgroundColorAnimation)
-            duration = 5000
+            duration = DURATION
             start()
         }
+    }
+
+    companion object {
+        private const val ROTATION_FROM = 0f
+        private const val ROTATION_TO = 3600f
+        private const val REPEAT_COUNT = 1
+        private const val DURATION = 5000L
     }
 }
